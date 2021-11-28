@@ -1,5 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
+import Login from '@/pages/login';
+import WrongPage from '@/pages/error';
+import Home from '@/pages/home';
 
 // 使用路由组件
 Vue.use(Router);
@@ -8,13 +11,24 @@ Vue.use(Router);
 const firstRouterMap = [
     {
         path: '/login',
+        component: Login,
     },
     {
         path: '/404',
+        component: WrongPage
     },
     {
-        path: ''
-    }
+        path: '',
+        redirect: '/home',
+        children: [
+            {
+                path: 'home',
+                name: 'home',
+                component: Home,
+                meta: {title: '首页', icon: 'home'}
+            }
+        ]
+    },
 ];
 export default new Router(
     {
