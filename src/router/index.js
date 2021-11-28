@@ -3,12 +3,13 @@ import Router from "vue-router";
 import Login from '@/pages/login';
 import WrongPage from '@/pages/error';
 import Home from '@/pages/home';
+import Layout from '@/pages/layout';
 
 // 使用路由组件
 Vue.use(Router);
 
 // 第一层路由
-const firstRouterMap = [
+export const firstRouterMap = [
     {
         path: '/login',
         component: Login,
@@ -20,6 +21,7 @@ const firstRouterMap = [
     {
         path: '',
         redirect: '/home',
+        component: Layout,
         children: [
             {
                 path: 'home',
@@ -30,6 +32,11 @@ const firstRouterMap = [
         ]
     },
 ];
+
+// 第二层以及相应下级路由
+export const secondRouterMap = [
+];
+
 export default new Router(
     {
         routes: firstRouterMap,
