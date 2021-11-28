@@ -20,7 +20,7 @@ export const firstRouterMap = [
     },
     {
         path: '',
-        redirect: '/home',
+        redirect: '/login',
         component: Layout,
         children: [
             {
