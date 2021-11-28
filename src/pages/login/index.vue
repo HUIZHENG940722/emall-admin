@@ -1,11 +1,39 @@
 <template>
   <div>
-    <img :src="login_center_bg" class="login-center-layout">
     <el-card class="login-form-layout">
       <el-form label-position="left">
-
+        <div style="text-align: center">
+          <svg-icon icon-class="login-mall" style="width: 56px;height: 56px;color: #409EFF"/>
+        </div>
+        <h2 class="login-title color-main">mall-admin-web</h2>
+        <el-form-item prop="username">
+          <el-input name="username" type="text" placeholder="请输入用户名">
+            <span slot="prefix">
+              <svg-icon icon-class="user" class-name="color-main"/>
+            </span>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input name="username" type="password" placeholder="请输入密码">
+            <span slot="prefix">
+              <svg-icon icon-class="password" class="color-main"></svg-icon>
+            </span>
+            <span slot="suffix">
+              <svg-icon icon-class="eye" class="color-main"></svg-icon>
+            </span>
+          </el-input>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 60px;text-align: center">
+          <el-button style="width: 45%">
+            登录
+          </el-button>
+          <el-button style="width: 45%">
+            获取体验账号
+          </el-button>
+        </el-form-item>
       </el-form>
     </el-card>
+    <img :src="login_center_bg" class="login-center-layout">
   </div>
 </template>
 
@@ -38,5 +66,8 @@ export default {
   width: 360px;
   margin: 140px auto;
   border-top: 10px solid #409EFF;
+}
+.login-title {
+  text-align: center;
 }
 </style>
