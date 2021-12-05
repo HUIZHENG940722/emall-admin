@@ -7,14 +7,14 @@
         </div>
         <h2 class="login-title color-main">mall-admin-web</h2>
         <el-form-item prop="username">
-          <el-input name="username" type="text" placeholder="请输入用户名">
+          <el-input name="username" v-model="loginForm.username" type="text" placeholder="请输入用户名">
             <span slot="prefix">
               <svg-icon icon-class="user" class-name="color-main"/>
             </span>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input name="username" type="password" placeholder="请输入密码">
+          <el-input name="password" v-model="loginForm.password" type="password" placeholder="请输入密码">
             <span slot="prefix">
               <svg-icon icon-class="password" class="color-main"></svg-icon>
             </span>
@@ -24,7 +24,7 @@
           </el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 60px;text-align: center">
-          <el-button style="width: 45%">
+          <el-button style="width: 45%" @click="login">
             登录
           </el-button>
           <el-button style="width: 45%">
@@ -39,13 +39,23 @@
 
 <script>
 import login_center_bg from '@/assets/login_center_bg.png';
+// import router, {firstRouterMap} from "@/router";
 
 export default {
   name: "Login",
   data() {
     return {
       login_center_bg,
+      loginForm: {
+        username: '',
+        password: '',
+      },
     }
+  },
+  methods: {
+    login() {
+      this.$router.push({path: '/'});
+    },
   }
 }
 </script>

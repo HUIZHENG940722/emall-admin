@@ -4,6 +4,8 @@ import Login from '@/pages/login';
 import WrongPage from '@/pages/error';
 import Home from '@/pages/home';
 import Layout from '@/pages/layout';
+import ProductList from "@/pages/pms/product";
+import AddProduct from "@/pages/pms/product/add";
 
 // 使用路由组件
 Vue.use(Router);
@@ -20,7 +22,7 @@ export const firstRouterMap = [
     },
     {
         path: '',
-        redirect: '/login',
+        redirect: '/home',
         component: Layout,
         children: [
             {
@@ -31,11 +33,33 @@ export const firstRouterMap = [
             }
         ]
     },
+    {
+        path: '/pms',
+        component: Layout,
+        redirect: '/pms/product',
+        name: 'pms',
+        meta: {title: '商品', icon: 'product'},
+        children: [
+            {
+                path: 'product',
+                name: 'product',
+                component: ProductList,
+                meta: {title: '商品列表', icon: 'product-list'}
+            },
+            {
+                path: 'addProduct',
+                name: 'addProduct',
+                component: AddProduct,
+                meta: {title: '添加商品', icon: 'product-add'}
+            },
+        ],
+    }
 ];
 
 // 第二层以及相应下级路由
-export const secondRouterMap = [
-];
+/*export const secondRouterMap = [
+
+];*/
 
 export default new Router(
     {

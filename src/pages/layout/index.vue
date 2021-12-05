@@ -1,17 +1,29 @@
 <template>
-  <div>
-    <h2>菜单栏内容</h2>
-    <h2>状态栏</h2>
-    <router-view/>
+  <div class="app-wrapper">
+    <Sidebar class="sidebar-container"></Sidebar>
+    <div class="main-container">
+      <Navbar></Navbar>
+      <AppMain></AppMain>
+    </div>
   </div>
 </template>
 
 <script>
+import Sidebar from "@/components/Sidebar";
+import Navbar from "@/components/Navbar";
+import AppMain from "@/components/AppMain";
 export default {
-  name: "Layout"
+  name: "Layout",
+  components: {Navbar, Sidebar, AppMain}
 }
 </script>
 
-<style scoped>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+@import "src/styles/mixin.scss";
+.app-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
 </style>

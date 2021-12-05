@@ -10,8 +10,11 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "element-ui": "^2.15.6",
+    "node-sass": "^6.0.1",
+    "sass-loader": "^10.2.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.5.3"
+    "vue-router": "^3.5.3",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -20,8 +23,8 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11",
-    "svg-sprite-loader": "^6.0.11"
+    "svg-sprite-loader": "^6.0.11",
+    "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,
