@@ -26,6 +26,7 @@
           </el-form-item>
           <el-form-item label="商品分类：">
             <el-cascader
+                :options="productCateOptions"
                 clearable>
             </el-cascader>
           </el-form-item>
@@ -228,8 +229,26 @@
 </template>
 
 <script>
+import {productCategoryListWithChildren} from "@/api/productCate";
+
 export default {
   name: "ProductList",
+  created() {
+    this.getProductCateLevelList();
+  },
+  data() {
+    return {
+      productCateOptions: [],
+    }
+  },
+  methods: {
+    getProductCateLevelList() {
+      productCategoryListWithChildren().then(response => {
+        console.log('返回结果信息', response);
+
+      });
+    }
+  }
 }
 </script>
 
