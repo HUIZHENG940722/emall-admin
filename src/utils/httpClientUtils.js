@@ -6,4 +6,8 @@ const httpClientUtils = axios.create({
     timeout: 15000,
 });
 
+/*httpClientUtils.interceptors.request.use(config => {
+    // config.headers['Access-Control-Allow-Origin']='*';
+});*/
+
 export default httpClientUtils;

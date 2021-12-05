@@ -17,37 +17,44 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" size="small" label-width="140px">
+        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="输入搜索：">
-            <el-input style="width: 203px" placeholder="商品名称"></el-input>
+            <el-input v-model="listQuery.keyword" style="width: 203px" placeholder="商品名称"></el-input>
           </el-form-item>
           <el-form-item label="商品货号：">
-            <el-input style="width: 203px" placeholder="商品货号"></el-input>
+            <el-input v-model="listQuery.productSn" style="width: 203px" placeholder="商品货号"></el-input>
           </el-form-item>
           <el-form-item label="商品分类：">
             <el-cascader
+                v-model="selectProductCateValue"
                 :options="productCateOptions"
                 clearable>
             </el-cascader>
           </el-form-item>
           <el-form-item label="商品品牌：">
-            <el-select placeholder="请选择品牌" clearable>
-              <el-option>
-                品牌列表
+            <el-select v-model="listQuery.brandId" placeholder="请选择品牌" clearable>
+              <el-option v-for="item in brandOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="上架状态：">
-            <el-select placeholder="全部" clearable>
-              <el-option>
-                品牌列表
+            <el-select v-model="listQuery.publishStatus" placeholder="全部" clearable>
+              <el-option v-for="item in publishStatusOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="审核状态：">
-            <el-select placeholder="全部" clearable>
-              <el-option>
-                审核状态
+            <el-select v-model="listQuery.verifyStatus" placeholder="全部" clearable>
+              <el-option v-for="item in verifyStatusOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -154,9 +161,12 @@
     <div class="batch-operate-container">
       <el-select
           size="small"
+          v-model="operateType"
           placeholder="批量操作">
-        <el-option>
-          批量操作
+        <el-option v-for="item in operates"
+                   :key="item.value"
+                   :label="item.label"
+                   :value="item.value">
         </el-option>
       </el-select>
       <el-button
@@ -231,6 +241,17 @@
 <script>
 import {productCategoryListWithChildren} from "@/api/productCate";
 
+const defaultListQuery = {
+  keyword: null,
+  pageNum: 1,
+  pageSize: 5,
+  publishStatus: null,
+  verifyStatus: null,
+  productSn: null,
+  productCategoryId: null,
+  brandId: null
+};
+
 export default {
   name: "ProductList",
   created() {
@@ -238,7 +259,39 @@ export default {
   },
   data() {
     return {
-      productCateOptions: [],
+      productCateOptions: [
+        {
+          label: "商品上架",
+          value: "publishOn"
+        },
+      ],
+      brandOptions: [
+        {
+          label: "商品上架",
+          value: "publishOn"
+        },
+      ],
+      publishStatusOptions: [
+        {
+          label: "商品上架",
+          value: "publishOn"
+        },
+      ],
+      verifyStatusOptions: [
+        {
+          label: "商品上架",
+          value: "publishOn"
+        },
+      ],
+      operates: [
+        {
+          label: "商品上架",
+          value: "publishOn"
+        },
+      ],
+      operateType: null,
+      selectProductCateValue: null,
+      listQuery: Object.assign({}, defaultListQuery),
     }
   },
   methods: {
