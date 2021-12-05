@@ -240,6 +240,7 @@
 
 <script>
 import {productCategoryListWithChildren} from "@/api/productCate";
+import {productBrandList} from "@/api/productBrand";
 
 const defaultListQuery = {
   keyword: null,
@@ -256,16 +257,12 @@ export default {
   name: "ProductList",
   created() {
     this.getProductCateLevelList();
+    this.getProductBrandList();
   },
   data() {
     return {
       productCateOptions: [],
-      brandOptions: [
-        {
-          label: "商品上架",
-          value: "publishOn"
-        },
-      ],
+      brandOptions: [],
       publishStatusOptions: [
         {
           label: "商品上架",
@@ -304,6 +301,15 @@ export default {
           this.productCateOptions.push({label: list[i].name, value: list[i].id, children: children});
         }
       });
+    },
+    getProductBrandList() {
+      productBrandList({pageNum: 1, pageSize: 10}).then(response => {
+        this.brandOptions = [];
+        let brandList = response.data.data.list;
+        for (let i = 0; i < brandList.length; i++) {
+          this.brandOptions.push({label: brandList[i].name, value: brandList[i].id});
+        }
+      })
     }
   }
 }
