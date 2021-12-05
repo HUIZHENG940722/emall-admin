@@ -259,12 +259,7 @@ export default {
   },
   data() {
     return {
-      productCateOptions: [
-        {
-          label: "商品上架",
-          value: "publishOn"
-        },
-      ],
+      productCateOptions: [],
       brandOptions: [
         {
           label: "商品上架",
@@ -297,8 +292,17 @@ export default {
   methods: {
     getProductCateLevelList() {
       productCategoryListWithChildren().then(response => {
-        console.log('返回结果信息', response);
-
+        let list = response.data.data;
+        this.productCateOptions = [];
+        for (let i = 0; i < list.length; i++) {
+          let children = [];
+          if (list[i].children != null && list[i].children.length > 0) {
+            for (let j = 0; j < list[i].children.length; j++) {
+              children.push({label: list[i].children[j].name, value: list[i].children[j].id});
+            }
+          }
+          this.productCateOptions.push({label: list[i].name, value: list[i].id, children: children});
+        }
       });
     }
   }

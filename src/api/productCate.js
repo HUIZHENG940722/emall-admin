@@ -6,7 +6,7 @@ import httpClientUtils from '@/utils/httpClientUtils';
  */
 export function productCategoryListWithChildren() {
     return httpClientUtils({
-        url: '/product/list/withChildren',
+        url: '/productCategory/list/withChildren',
         method: 'get',
     });
 }
