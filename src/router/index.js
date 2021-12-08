@@ -6,6 +6,7 @@ import Home from '@/pages/home';
 import Layout from '@/pages/layout';
 import ProductList from "@/pages/pms/product";
 import AddProduct from "@/pages/pms/product/add";
+import ProductCateList from '@/pages/pms/productCate'
 
 // 使用路由组件
 Vue.use(Router);
@@ -52,6 +53,12 @@ export const firstRouterMap = [
                 component: AddProduct,
                 meta: {title: '添加商品', icon: 'product-add'}
             },
+            {
+                path: 'productCate',
+                name: 'productCate',
+                component: ProductCateList,
+                meta: {title: '商品分类', icon: 'product-cate'}
+            }
         ],
     }
 ];
