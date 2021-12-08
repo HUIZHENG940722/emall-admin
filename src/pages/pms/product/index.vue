@@ -65,6 +65,7 @@
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
       <el-button
+          @click="handleAddProduct()"
           class="btn-add"
           size="mini">
         添加
@@ -265,21 +266,56 @@ export default {
       brandOptions: [],
       publishStatusOptions: [
         {
-          label: "商品上架",
-          value: "publishOn"
+          value: 1,
+          label: '上架'
         },
+        {
+          value: 0,
+          label: '下架'
+        }
       ],
       verifyStatusOptions: [
         {
-          label: "商品上架",
-          value: "publishOn"
-        },
+          value: 1,
+          label: '审核通过'
+        }, {
+          value: 0,
+          label: '未审核'
+        }
       ],
       operates: [
         {
           label: "商品上架",
           value: "publishOn"
         },
+        {
+          label: "商品下架",
+          value: "publishOff"
+        },
+        {
+          label: "设为推荐",
+          value: "recommendOn"
+        },
+        {
+          label: "取消推荐",
+          value: "recommendOff"
+        },
+        {
+          label: "设为新品",
+          value: "newOn"
+        },
+        {
+          label: "取消新品",
+          value: "newOff"
+        },
+        {
+          label: "转移到分类",
+          value: "transferCategory"
+        },
+        {
+          label: "移入回收站",
+          value: "recycle"
+        }
       ],
       operateType: null,
       selectProductCateValue: null,
@@ -310,7 +346,10 @@ export default {
           this.brandOptions.push({label: brandList[i].name, value: brandList[i].id});
         }
       })
-    }
+    },
+    handleAddProduct() {
+      this.$router.push({path: '/pms/addProduct'});
+    },
   }
 }
 </script>

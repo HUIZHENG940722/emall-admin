@@ -1,10 +1,12 @@
 <template>
-  <h2>添加商品列表</h2>
+  <ProductDetail></ProductDetail>
 </template>
 
 <script>
+import ProductDetail from "@/components/ProductDetail";
 export default {
-  name: "AddProduct"
+  name: "AddProduct",
+  components: {ProductDetail},
 }
 </script>
 
