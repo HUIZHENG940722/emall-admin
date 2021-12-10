@@ -4,7 +4,8 @@
       <i class="el-icon-tickets" style="margin-top: 5px"></i>
       <span style="margin-top: 5px">数据列表</span>
       <el-button class="btn-add"
-          size="mini">
+                 @click="handleAddProductCate()"
+                 size="mini">
         添加
       </el-button>
     </el-card>
@@ -90,6 +91,11 @@ export default {
         pageNum: 1,
         pageSize: 5
       },
+    }
+  },
+  methods: {
+    handleAddProductCate() {
+      this.$router.push('/pms/addProductCate');
     }
   }
 }

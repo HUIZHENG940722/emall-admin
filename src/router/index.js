@@ -6,7 +6,9 @@ import Home from '@/pages/home';
 import Layout from '@/pages/layout';
 import ProductList from "@/pages/pms/product";
 import AddProduct from "@/pages/pms/product/add";
-import ProductCateList from '@/pages/pms/productCate'
+import ProductCateList from '@/pages/pms/productCate';
+import AddProductCate from '@/pages/pms/productCate/add';
+import ProductAttrCateList from '@/pages/pms/productAttr';
 
 // 使用路由组件
 Vue.use(Router);
@@ -37,7 +39,7 @@ export const firstRouterMap = [
     {
         path: '/pms',
         component: Layout,
-        redirect: '/pms/product',
+        redirect: '/pms/Product',
         name: 'pms',
         meta: {title: '商品', icon: 'product'},
         children: [
@@ -51,14 +53,27 @@ export const firstRouterMap = [
                 path: 'addProduct',
                 name: 'addProduct',
                 component: AddProduct,
-                meta: {title: '添加商品', icon: 'product-add'}
+                meta: {title: '添加商品', icon: 'Product-add'}
             },
             {
                 path: 'productCate',
                 name: 'productCate',
                 component: ProductCateList,
-                meta: {title: '商品分类', icon: 'product-cate'}
-            }
+                meta: {title: '商品分类', icon: 'Product-cate'}
+            },
+            {
+                path: 'addProductCate',
+                name: 'addProductCate',
+                component: AddProductCate,
+                meta: {title: '添加商品分类'},
+                hidden: true
+            },
+            {
+                path: 'productAttr',
+                name: 'productAttr',
+                component: ProductAttrCateList,
+                meta: {title: '商品类型', icon: 'product-attr'}
+            },
         ],
     }
 ];

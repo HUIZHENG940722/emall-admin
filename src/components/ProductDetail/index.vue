@@ -12,7 +12,7 @@
 
 <script>
 
-import ProductInfoDetail from "@/components/ProductInfoDetail";
+import ProductInfoDetail from "@/components/ProductDetail/Info";
 
 const defaultProductParam = {
   albumPics: '',
