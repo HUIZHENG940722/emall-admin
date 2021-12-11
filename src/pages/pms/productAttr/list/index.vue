@@ -86,8 +86,13 @@
 </template>
 
 <script>
+import {getProductAttrList} from "@/api/productAttr";
+
 export default {
   name: "ProductAttrList",
+  created() {
+    this.productAttrList();
+  },
   data() {
     return {
       list: null,
@@ -107,6 +112,12 @@ export default {
     }
   },
   methods: {
+    productAttrList() {
+      getProductAttrList(this.$route.query.cid, this.listQuery).then(response => {
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
+      });
+    },
     addProductAttr() {
       this.$router.push({path:'/pms/addProductAttr',query:{cid:this.$route.query.cid, type:this.$route.query.type}});
     },

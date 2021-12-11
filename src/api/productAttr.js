@@ -12,3 +12,17 @@ export function createProductAttr(data) {
         data:data
     })
 }
+
+/**
+ * 获取商品类型列表
+ * @param cid
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function getProductAttrList(cid,params) {
+    return httpClientUtils({
+        url:'/productAttribute/list/'+cid,
+        method:'get',
+        params:params
+    })
+}

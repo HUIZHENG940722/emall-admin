@@ -82,7 +82,7 @@ export const firstRouterMap = [
             {
                 path: 'productAttrList',
                 name: 'productAttrList',
-                component: () => import('@/pages/pms/productAttr/index'),
+                component: () => import('@/pages/pms/productAttr/list'),
                 meta: {title: '商品属性列表'},
                 hidden: true
             },
