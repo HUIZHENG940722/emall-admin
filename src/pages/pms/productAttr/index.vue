@@ -5,50 +5,71 @@
       <span style="margin-top: 5px">数据列表</span>
       <el-button
           class="btn-add"
-          size="mini"
-          @click="addProductAttrCate()">
+          size="mini">
         添加
       </el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="productAttrCateTable"
-                style="width: 100%"
+      <el-table ref="productAttrTable"
                 :data="list"
+                style="width: 100%"
                 border>
+        <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="类型名称" align="center">
+        <el-table-column label="属性名称" width="140" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="属性数量" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.attributeCount==null?0:scope.row.attributeCount}}</template>
+        <el-table-column label="商品类型" width="140" align="center">
+          <template slot-scope="">{{$route.query.cname}}</template>
         </el-table-column>
-        <el-table-column label="参数数量" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.paramCount==null?0:scope.row.paramCount}}</template>
+        <el-table-column label="属性是否可选" width="120" align="center">
+          <template slot-scope="scope">{{scope.row.selectType}}</template>
         </el-table-column>
-        <el-table-column label="设置" width="200" align="center">
-          <template slot-scope="">
-            <el-button
-                size="mini">属性列表
-            </el-button>
-            <el-button
-                size="mini">参数列表
-            </el-button>
-          </template>
+        <el-table-column label="属性值的录入方式" width="150" align="center">
+          <template slot-scope="scope">{{scope.row.inputType}}</template>
+        </el-table-column>
+        <el-table-column label="可选值列表" align="center">
+          <template slot-scope="scope">{{scope.row.inputList}}</template>
+        </el-table-column>
+        <el-table-column label="排序" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.sort}}</template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
-          <template slot-scope="">
+          <template slot-scope="scope">
             <el-button
-                size="mini">编辑
+                size="mini"
+                @click="handleUpdate(scope.$index, scope.row)">编辑
             </el-button>
             <el-button
                 size="mini"
-                type="danger">删除
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
+    </div>
+    <div class="batch-operate-container">
+      <el-select
+          size="small"
+          v-model="operateType" placeholder="批量操作">
+        <el-option
+            v-for="item in operates"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button
+          style="margin-left: 20px"
+          class="search-button"
+          @click="handleBatchOperate()"
+          type="primary"
+          size="small">
+        确定
+      </el-button>
     </div>
     <div class="pagination-container">
       <el-pagination
@@ -60,83 +81,41 @@
           :total="total">
       </el-pagination>
     </div>
-    <el-dialog
-        :title="dialogTitle"
-        :visible.sync="dialogVisible"
-        width="30%">
-      <el-form ref="productAttrCatForm" :model="productAttrCate" :rules="rules" label-width="120px">
-        <el-form-item label="类型名称" prop="name">
-          <el-input v-model="productAttrCate.name" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleConfirm('productAttrCatForm')">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {createProductAttrCate, getProductAttrCateList} from "@/api/productAttrCate";
-
 export default {
-  name: "ProductAttrCateList",
+  name: "ProductAttrList",
   data() {
     return {
       list: null,
+      operateType: null,
+      operates: [
+        {
+          label: "删除",
+          value: "deleteProductAttr"
+        }
+      ],
       listQuery: {
         pageNum: 1,
-        pageSize: 5
+        pageSize: 5,
+        type: this.$route.query.type
       },
       total: 0,
-      dialogTitle: null,
-      dialogVisible: false,
-      productAttrCate:{
-        name:'',
-        id:null
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入类型名称', trigger: 'blur' }
-        ]
-      }
     }
   },
   methods: {
-    productAttrCateList() {
-      getProductAttrCateList(this.listQuery).then(response => {
-        this.list = response.data.list;
-        this.total = response.data.total;
-      });
+    handleUpdate(index, row) {
+      this.$router.push({path:'/pms/updateProductAttr', query:{id:row.id}});
     },
-    addProductAttrCate() {
-      this.dialogVisible = true;
-      this.dialogTitle = "添加类型";
+    handleDelete(index, row) {
+      console.log(row);
     },
-    handleConfirm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let data = new URLSearchParams();
-          data.append("name",this.productAttrCate.name);
-          if (this.dialogTitle === '添加类型') {
-            createProductAttrCate(data).then(() => {
-              this.$message({
-                message: '添加成功',
-                type: 'success',
-                duration:1000
-              });
-              this.dialogVisible = false;
-              this.productAttrCateList();
-            });
-          }
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
-  }
+    handleBatchOperate() {
+
+    }
+  },
 }
 </script>
 

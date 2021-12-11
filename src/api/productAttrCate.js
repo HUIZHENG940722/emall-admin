@@ -25,3 +25,17 @@ export function getProductAttrCateList(params) {
         params: params
     });
 }
+
+/**
+ * 编辑商品类型分类
+ * @param id
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function updateProductAttrCate(id,data) {
+    return httpClientUtils({
+        url:'/productAttribute/category/update/'+id,
+        method:'post',
+        data:data
+    })
+}

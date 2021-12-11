@@ -8,7 +8,7 @@ import ProductList from "@/pages/pms/product";
 import AddProduct from "@/pages/pms/product/add";
 import ProductCateList from '@/pages/pms/productCate';
 import AddProductCate from '@/pages/pms/productCate/add';
-import ProductAttrCateList from '@/pages/pms/productAttr';
+import ProductAttrCateList from '@/pages/pms/productAttr/cate';
 
 // 使用路由组件
 Vue.use(Router);
@@ -73,6 +73,13 @@ export const firstRouterMap = [
                 name: 'productAttr',
                 component: ProductAttrCateList,
                 meta: {title: '商品类型', icon: 'product-attr'}
+            },
+            {
+                path: 'productAttrList',
+                name: 'productAttrList',
+                component: () => import('@/pages/pms/productAttr/index'),
+                meta: {title: '商品属性列表'},
+                hidden: true
             },
         ],
     }
