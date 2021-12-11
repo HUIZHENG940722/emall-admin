@@ -5,6 +5,7 @@
       <span style="margin-top: 5px">数据列表</span>
       <el-button
           class="btn-add"
+          @click="addProductAttr()"
           size="mini">
         添加
       </el-button>
@@ -106,6 +107,9 @@ export default {
     }
   },
   methods: {
+    addProductAttr() {
+      this.$router.push({path:'/pms/addProductAttr',query:{cid:this.$route.query.cid, type:this.$route.query.type}});
+    },
     handleUpdate(index, row) {
       this.$router.push({path:'/pms/updateProductAttr', query:{id:row.id}});
     },
