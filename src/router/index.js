@@ -82,7 +82,7 @@ export const firstRouterMap = [
             {
                 path: 'productAttrList',
                 name: 'productAttrList',
-                component: () => import('@/pages/pms/productAttr/list'),
+                component: () => import('@/pages/pms/productAttr'),
                 meta: {title: '商品属性列表'},
                 hidden: true
             },
@@ -100,6 +100,26 @@ export const firstRouterMap = [
                 meta: {title: '修改商品属性'},
                 hidden: true
             },
+            {
+                path: 'brand',
+                name: 'brand',
+                component: () => import('@/pages/pms/brand/index'),
+                meta: {title: '品牌管理', icon: 'product-brand'}
+            },
+            {
+                path: 'addBrand',
+                name: 'addBrand',
+                component: () => import('@/pages/pms/brand/add'),
+                meta: {title: '添加品牌'},
+                hidden: true
+            },
+            {
+                path: 'updateBrand',
+                name: 'updateBrand',
+                component: () => import('@/pages/pms/brand/update'),
+                meta: {title: '编辑品牌'},
+                hidden: true
+            }
         ],
     }
 ];
