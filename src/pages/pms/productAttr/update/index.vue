@@ -1,10 +1,12 @@
 <template>
-  <h2>修改商品类型</h2>
+  <AddOrUpdateProductAttr :is-edit='true'></AddOrUpdateProductAttr>
 </template>
 
 <script>
+import AddOrUpdateProductAttr from "@/components/ProductDetail/Attr/addOrUpdate";
 export default {
-  name: "UpdateProductAttr"
+  name: "UpdateProductAttr",
+  components: {AddOrUpdateProductAttr},
 }
 </script>
 

@@ -26,3 +26,29 @@ export function getProductAttrList(cid,params) {
         params:params
     })
 }
+
+/**
+ * 获取商品类型
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function getProductAttr(id) {
+    return httpClientUtils({
+        url:'/productAttribute/'+id,
+        method:'get'
+    })
+}
+
+/**
+ * 更新商品类型
+ * @param id
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function updateProductAttr(id,data) {
+    return httpClientUtils({
+        url:'/productAttribute/update/'+id,
+        method:'post',
+        data:data
+    })
+}

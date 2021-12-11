@@ -33,7 +33,7 @@
                 size="mini" @click="getAttrList(scope.$index, scope.row)">属性列表
             </el-button>
             <el-button
-                size="mini">参数列表
+                size="mini" @click="getParamList(scope.$index, scope.row)">参数列表
             </el-button>
           </template>
         </el-table-column>
@@ -165,6 +165,16 @@ export default {
           type: 0
         }
       });
+    },
+    getParamList(index, row) {
+      this.$router.push({
+        path: '/pms/productAttrList',
+        query: {
+          cid: row.id,
+          cname: row.name,
+          type: 1
+        }
+      })
     },
   }
 }
