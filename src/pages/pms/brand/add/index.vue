@@ -1,10 +1,12 @@
 <template>
-  <h2>添加品牌</h2>
+  <AddOrUpdateBrand :is-edit='false'></AddOrUpdateBrand>
 </template>
 
 <script>
+import AddOrUpdateBrand from "@/components/Brand/AddOrUpdate";
 export default {
-  name: "AddBrand"
+  name: "AddBrand",
+  components: {AddOrUpdateBrand}
 }
 </script>
 

@@ -165,7 +165,7 @@ export default {
 
     },
     addBrand() {
-
+      this.$router.push({path: '/pms/addBrand'});
     },
     handleSelectionChange() {
     },
