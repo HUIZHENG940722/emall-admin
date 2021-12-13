@@ -11,7 +11,7 @@ export function createBrand(data) {
         method:'post',
         data:data
     })
-};
+}
 
 /**
  * 修改商品品牌

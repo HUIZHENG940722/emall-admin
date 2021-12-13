@@ -8,10 +8,10 @@
         <el-input v-model="brand.firstLetter"></el-input>
       </el-form-item>
       <el-form-item label="品牌LOGO：" prop="logo">
-        <single-upload v-model="brand.logo"></single-upload>
+        <SingleUpload v-model="brand.logo"></SingleUpload>
       </el-form-item>
       <el-form-item label="品牌专区大图：">
-        <single-upload v-model="brand.bigPic"></single-upload>
+        <SingleUpload v-model="brand.bigPic"></SingleUpload>
       </el-form-item>
       <el-form-item label="品牌故事：">
         <el-input
@@ -45,6 +45,7 @@
 
 <script>
 import {createBrand, updateBrand} from '@/api/brand';
+import SingleUpload from "@/components/Upload/Single";
 const defaultBrand={
   bigPic: '',
   brandStory: '',
@@ -57,6 +58,7 @@ const defaultBrand={
 };
 export default {
   name: "AddOrUpdateBrand",
+  components: {SingleUpload},
   props: {
     isEdit: {
       type: Boolean,
