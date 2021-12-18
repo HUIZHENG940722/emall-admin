@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {createBrand, updateBrand} from '@/api/brand';
+import {createBrand, getBrand, updateBrand} from '@/api/brand';
 import SingleUpload from "@/components/Upload/Single";
 const defaultBrand={
   bigPic: '',
@@ -59,6 +59,15 @@ const defaultBrand={
 export default {
   name: "AddOrUpdateBrand",
   components: {SingleUpload},
+  created() {
+    if (this.isEdit) {
+      getBrand(this.$route.query.id).then(response => {
+        this.brand = response.data.data;
+      })
+    } else {
+      this.brand = Object.assign({}, defaultBrand);
+    }
+  },
   props: {
     isEdit: {
       type: Boolean,

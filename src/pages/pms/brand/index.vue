@@ -136,6 +136,8 @@
 </template>
 
 <script>
+import {brandList} from "@/api/brand";
+
 export default {
   name: "BrandList",
   created() {
@@ -165,7 +167,12 @@ export default {
   },
   methods: {
     getBrandList() {
-
+      brandList(this.listQuery).then(response => {
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
+        this.totalPage = response.data.data.totalPage;
+        this.pageSize = response.data.data.pageSize;
+      });
     },
     searchBrandList() {
 
@@ -188,7 +195,14 @@ export default {
       console.log(row);
     },
     handleUpdate(index, row) {
-      console.log(row);
+      this.$router.push(
+          {
+            path: '/pms/updateBrand',
+            query: {
+              id: row.id
+            }
+          }
+      )
     },
     handleDelete(index, row) {
       console.log(row);
