@@ -1,15 +1,9 @@
 import httpClientUtils from "@/utils/httpClientUtils";
 
-export function policy() {
+export function initPostData() {
     return httpClientUtils({
-        url:'/aliyun/oss/policy',
+        url:'/aliyun/oss/initPostData',
         method:'get',
     })
 }
 
-export function callback() {
-    return httpClientUtils({
-        url: '/aliyun/oss/callback',
-        method: 'post'
-    });
-}

@@ -138,6 +138,9 @@
 <script>
 export default {
   name: "BrandList",
+  created() {
+    this.getBrandList();
+  },
   data() {
     return {
       listQuery: {
@@ -161,6 +164,9 @@ export default {
     }
   },
   methods: {
+    getBrandList() {
+
+    },
     searchBrandList() {
 
     },

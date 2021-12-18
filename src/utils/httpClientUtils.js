@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const httpClientUtils = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://atpp36.natappfree.cc',
     timeout: 15000,
 });
 

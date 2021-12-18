@@ -20,70 +20,79 @@
 </template>
 
 <script>
-// const Base64 = require('js-base64').Base64;
-// import Crypto from 'crypto-js';
+
+import {initPostData} from "@/api/oss";
 
 export default {
   name: "SingleUpload",
+  props: {
+    value: String
+  },
   data() {
     return {
-      ossUploadUrl:'https://ethan-oos.oss-cn-shenzhen.aliyuncs.com/',
+      ossUploadUrl:'',
       dataObj: {
-        // OSSAccessKeyId: '',
-        // policy: '',
-        // Signature: '',
+        OSSAccessKeyId: '',
+        policy: '',
+        Signature: '',
         key: '',
-        // file: null,
+        callback: ''
       },
       dialogVisible: false,
     }
   },
   computed: {
     showFileList: {
-      get: function () {
+      get() {
         return this.value !== null && this.value !== ''&& this.value!==undefined;
       },
-      set: function () {
-
+      set() {
+        this.showFileList = this.value !== null && this.value !== ''&& this.value!==undefined;
       }
     },
     fileList() {
       return [
         {
           url: this.value,
-          name: this.value ? this.value.substr(this.value.lastIndex('/')+1): null
+          name: this.value ? this.value.substr(this.value.lastIndexOf("/")+1): null
         }
       ]
     },
   },
   methods: {
     handlePreview() {
-
+      this.dialogVisible = true;
+      console.log('预览图片');
     },
     beforeUpload(file) {
-      console.log('文件信息', file);
       // 初始化dataObj数据
       let _self = this;
-      // _self.dataObj.OSSAccessKeyId = 'LTAI5tPsVb7b1DktXAT9nUbP'; // Y8XatePpBknQ2D74lYuSuVqUe72XnX
-      /*let policyText = {
-        expiration: "2022-12-01T12:00:00.000Z",
-        conditions: [
-          {
-            "bucket": "ethan-oos"
-          },
-          ["content-length-range", 1, 1048576000],
-        ],
-      };*/
-      // _self.dataObj.policy = Base64.encode(JSON.stringify(policyText));
-      // _self.dataObj.Signature = Crypto.HmacSHA1(Base64.encode(JSON.stringify(policyText)), 'Y8XatePpBknQ2D74lYuSuVqUe72XnX');
-      // _self.dataObj.file = file;
-      _self.dataObj.key = 'emall/' + file.name;
+      return new Promise((resolve, reject) => {
+        initPostData().then(response => {
+          _self.dataObj.OSSAccessKeyId = response.data.data.ossaccessKeyId;
+          _self.dataObj.policy = response.data.data.policy;
+          _self.dataObj.Signature = response.data.data.signature;
+          _self.dataObj.key = response.data.data.dir + "/" + file.name;
+          _self.dataObj.callback = response.data.data.callback
+          _self.ossUploadUrl = response.data.data.host;
+          resolve(true);
+        }).catch(() => {
+          reject(false);
+        });
+      });
     },
     handleUploadSuccess(res, file) {
-      console.log('返回结果', res, file.name, file);
+      // this.showFileList = true;
+      this.fileList.pop();
+      let url = res.data.filename;
+      this.fileList.push({
+        name: file.name,
+        url: url
+      })
+      this.$emit('input', this.fileList[0].url);
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleRemove() {
+      this.$emit('input', '');
     }
   }
 }
