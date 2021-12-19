@@ -39,3 +39,14 @@ export function updateProductAttrCate(id,data) {
         data:data
     })
 }
+
+/**
+ * 获取商品类型分类及类型
+ * @returns {AxiosPromise}
+ */
+export function getProductAttrCateWithAttr() {
+    return httpClientUtils({
+        url:'/productAttribute/category/list/withAttr',
+        method:'get'
+    })
+}

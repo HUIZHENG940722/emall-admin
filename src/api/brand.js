@@ -22,7 +22,7 @@ export function createBrand(data) {
 export function updateBrand(id,data) {
     return httpClientUtils({
         url:'/brand/update/'+id,
-        method:'post',
+        method:'put',
         data:data
     })
 }

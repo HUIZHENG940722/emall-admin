@@ -69,6 +69,7 @@
 
 <script>
 import SingleUpload from '@/components/Upload/Single';
+import {getProductAttrCateWithAttr} from "@/api/productAttrCate";
 const defaultProductCate = {
   description: '',
   icon: '',
@@ -83,6 +84,9 @@ const defaultProductCate = {
 };
 export default {
   name: "ProductCateDetail",
+  created() {
+    this.getProductAttrCateList();
+  },
   components: {SingleUpload},
   data() {
     return {
@@ -101,13 +105,30 @@ export default {
     }
   },
   methods: {
+    getProductAttrCateList() {
+      getProductAttrCateWithAttr().then(response => {
+        let list = response.data.data;
+        for (let i = 0; i < list.length; i++) {
+          let productAttrCate = list[i];
+          let children = [];
+          if (productAttrCate.productAttributeList != null && productAttrCate.productAttributeList.length > 0) {
+            for (let j = 0; j < productAttrCate.productAttributeList.length; j++) {
+              children.push({
+                label: productAttrCate.productAttributeList[j].name,
+                value: productAttrCate.productAttributeList[j].id
+              })
+            }
+          }
+          this.filterAttrs.push({
+            label: productAttrCate.name,
+            value: productAttrCate.id,
+            children: children
+          })
+        }
+      });
+    },
     onSubmit(formName) {
       console.log('关联数据', this.$refs[formName]);
-      /*this.$refs[formName].validate((valid) => {
-        if (valid) {
-
-        }
-      });*/
     }
   }
 }
