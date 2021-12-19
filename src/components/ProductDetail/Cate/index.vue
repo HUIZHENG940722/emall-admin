@@ -51,7 +51,7 @@
         <el-button style="margin-left: 20px">删除</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button size="small" type="primary">新增</el-button>
+        <el-button size="small" type="primary" @click="handleAddFilterAttr()">新增</el-button>
       </el-form-item>
       <el-form-item label="关键词：">
         <el-input v-model="productCate.keywords"></el-input>
@@ -70,6 +70,7 @@
 <script>
 import SingleUpload from '@/components/Upload/Single';
 import {getProductAttrCateWithAttr} from "@/api/productAttrCate";
+import {createProductCate, getFirstLevelProductCateList, updateProductCate} from "@/api/productCate";
 const defaultProductCate = {
   description: '',
   icon: '',
@@ -85,7 +86,18 @@ const defaultProductCate = {
 export default {
   name: "ProductCateDetail",
   created() {
+    if (this.isEdit) {
+      console.log('编辑');
+    } else {
+      this.productCate = Object.assign({}, defaultProductCate);
+    }
     this.getProductAttrCateList();
+  },
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {SingleUpload},
   data() {
@@ -108,6 +120,7 @@ export default {
     getProductAttrCateList() {
       getProductAttrCateWithAttr().then(response => {
         let list = response.data.data;
+        console.log('参数层级结构', list);
         for (let i = 0; i < list.length; i++) {
           let productAttrCate = list[i];
           let children = [];
@@ -127,8 +140,77 @@ export default {
         }
       });
     },
+    getSelectProductCateList() {
+      getFirstLevelProductCateList(0, {pageSize: 100, pageNum: 1}).then(response => {
+        this.selectProductCateList = response.data.list;
+        this.selectProductCateList.unshift({id: 0, name: '无上级分类'});
+      });
+    },
+    getProductAttributeIdList() {
+      let productAttributeIdList = [];
+      for (let i = 0; i < this.filterProductAttrList.length; i++) {
+        let item = this.filterProductAttrList[i];
+        if (item.value != null && item.value.length === 2) {
+          productAttributeIdList.push(item.value[1]);
+        }
+      }
+      return productAttributeIdList;
+    },
+    handleAddFilterAttr() {
+      if (this.filterProductAttrList.length === 3) {
+        this.$message({
+          message: '最多添加三个',
+          type: 'warning',
+          duration: 1000
+        });
+        return;
+      }
+      this.filterProductAttrList.push({
+        value: null,
+        key: Date.now()
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+      this.productCate = Object.assign({}, defaultProductCate);
+      this.getSelectProductCateList();
+      this.filterProductAttrList = [{
+        value: []
+      }];
+    },
     onSubmit(formName) {
-      console.log('关联数据', this.$refs[formName]);
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$confirm('是否提交数据', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            if (this.isEdit) {
+              this.productCate.productAttributeIdList = this.getProductAttributeIdList();
+              updateProductCate(this.$route.query.id, this.productCate).then(() => {
+                this.$message({
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 1000
+                });
+                this.$router.back();
+              });
+            } else {
+              createProductCate(this.productCate).then(() => {
+                this.$refs[formName].resetFields();
+                // 重置表单
+                this.resetForm(formName);
+                this.$message({
+                  message: '提交成功',
+                  type: 'success',
+                  duration: 1000
+                });
+              });
+            }
+          })
+        }
+      });
     }
   }
 }

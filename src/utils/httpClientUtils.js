@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const httpClientUtils = axios.create({
-    baseURL: 'http://mipyij.natappfree.cc',
+    baseURL: 'https://localhost:8080',
     timeout: 15000,
 });
 
