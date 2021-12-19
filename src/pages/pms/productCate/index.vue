@@ -75,15 +75,20 @@
           :page-size="listQuery.pageSize"
           :page-sizes="[5,10,15]"
           :current-page.sync="listQuery.pageNum"
-          :total="4">
+          :total="total">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+import {getFirstLevelProductCateList} from "@/api/productCate";
+
 export default {
   name: "ProductCateList",
+  created() {
+    this.getFirstProductCateList();
+  },
   data() {
     return {
       list: null,
@@ -91,9 +96,17 @@ export default {
         pageNum: 1,
         pageSize: 5
       },
+      total: 0,
+      parentId: 0
     }
   },
   methods: {
+    getFirstProductCateList() {
+      getFirstLevelProductCateList(this.parentId, this.listQuery).then(response => {
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
+      });
+    },
     handleAddProductCate() {
       this.$router.push('/pms/addProductCate');
     }

@@ -120,7 +120,6 @@ export default {
     getProductAttrCateList() {
       getProductAttrCateWithAttr().then(response => {
         let list = response.data.data;
-        console.log('参数层级结构', list);
         for (let i = 0; i < list.length; i++) {
           let productAttrCate = list[i];
           let children = [];
