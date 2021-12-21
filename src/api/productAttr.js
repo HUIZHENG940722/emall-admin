@@ -52,3 +52,10 @@ export function updateProductAttr(id,data) {
         data:data
     })
 }
+
+export function getProductAttrInfo(productCategoryId) {
+    return httpClientUtils({
+        url:'/productAttribute/attrInfo/'+productCategoryId,
+        method:'get'
+    })
+}

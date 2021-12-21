@@ -1,10 +1,12 @@
 <template>
-  <h2>修改商品分类</h2>
+  <ProductCateDetail :is-edit="true"></ProductCateDetail>
 </template>
 
 <script>
+import ProductCateDetail from "@/components/ProductDetail/Cate";
 export default {
   name: "UpdateProductCate",
+  components: {ProductCateDetail},
 }
 </script>
 

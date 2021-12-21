@@ -22,7 +22,7 @@ export function updateProductCate(id,data) {
         url:'/productCategory/update/'+id,
         method:'put',
         data:data
-    })
+    });
 }
 
 /**
@@ -35,7 +35,7 @@ export function createProductCate(data) {
         url:'/productCategory/create',
         method:'post',
         data:data
-    })
+    });
 }
 
 /**
@@ -49,5 +49,17 @@ export function getFirstLevelProductCateList(parentId,params) {
         url:'/productCategory/list/'+parentId,
         method:'get',
         params:params
-    })
+    });
+}
+
+/**
+ * 获取商品分类
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function getProductCate(id) {
+    return httpClientUtils({
+        url:'/productCategory/'+id,
+        method:'get',
+    });
 }

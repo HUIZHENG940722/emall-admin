@@ -56,9 +56,10 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
-          <template slot-scope="">
+          <template slot-scope="scope">
             <el-button
-                size="mini">编辑
+                size="mini"
+                @click="handleUpdate(scope.$index, scope.row)">编辑
             </el-button>
             <el-button
                 size="mini"
@@ -71,6 +72,8 @@
     <div class="pagination-container">
       <el-pagination
           background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
           layout="total, sizes,prev, pager, next,jumper"
           :page-size="listQuery.pageSize"
           :page-sizes="[5,10,15]"
@@ -109,6 +112,23 @@ export default {
     },
     handleAddProductCate() {
       this.$router.push('/pms/addProductCate');
+    },
+    handleUpdate(index, row) {
+      this.$router.push({
+        path: '/pms/updateProductCate',
+        query: {
+          id: row.id
+        }
+      });
+    },
+    handleSizeChange(val) {
+      this.listQuery.pageNum = 1;
+      this.listQuery.pageSize = val;
+      this.getFirstProductCateList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.pageNum = val;
+      this.getFirstProductCateList();
     }
   }
 }

@@ -41,8 +41,7 @@
       </el-form-item>
       <el-form-item v-for="(filterProductAttr, index) in filterProductAttrList"
                     :label="index.toString()"
-                    :key="filterProductAttr.key"
-      >
+                    :key="filterProductAttr.key">
         <el-cascader
             clearable
             v-model="filterProductAttr.value"
@@ -70,7 +69,8 @@
 <script>
 import SingleUpload from '@/components/Upload/Single';
 import {getProductAttrCateWithAttr} from "@/api/productAttrCate";
-import {createProductCate, getFirstLevelProductCateList, updateProductCate} from "@/api/productCate";
+import {createProductCate, getFirstLevelProductCateList, getProductCate, updateProductCate} from "@/api/productCate";
+import {getProductAttrInfo} from "@/api/productAttr";
 const defaultProductCate = {
   description: '',
   icon: '',
@@ -87,7 +87,20 @@ export default {
   name: "ProductCateDetail",
   created() {
     if (this.isEdit) {
-      console.log('编辑');
+      getProductCate(this.$route.query.id).then(response => {
+        this.productCate = response.data.data;
+      });
+      getProductAttrInfo(this.$route.query.id).then(response => {
+        if (response.data.data != null && response.data.data.length > 0) {
+          this.filterProductAttrList = [];
+          for (let i = 0; i < response.data.data.length; i++) {
+            this.filterProductAttrList.push({
+              key: Date.now() + i,
+              value: [response.data.data[i].attributeCategoryId, response.data.data[i].attributeId]
+            });
+          }
+        }
+      })
     } else {
       this.productCate = Object.assign({}, defaultProductCate);
     }
@@ -185,8 +198,8 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.productCate.productAttributeIdList = this.getProductAttributeIdList();
             if (this.isEdit) {
-              this.productCate.productAttributeIdList = this.getProductAttributeIdList();
               updateProductCate(this.$route.query.id, this.productCate).then(() => {
                 this.$message({
                   message: '修改成功',
