@@ -68,6 +68,10 @@ export default {
   },
   props: {
     value: Object,
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

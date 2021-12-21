@@ -63,7 +63,8 @@
             </el-button>
             <el-button
                 size="mini"
-                type="danger">删除
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-import {getFirstLevelProductCateList} from "@/api/productCate";
+import {deleteProductCate, getFirstLevelProductCateList} from "@/api/productCate";
 
 export default {
   name: "ProductCateList",
@@ -120,6 +121,21 @@ export default {
           id: row.id
         }
       });
+    },
+    handleDelete(index, row) {
+      this.$confirm('是否要删除该品牌', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteProductCate(row.id).then(() => {
+          this.$message({
+            message: '删除成功',
+            type: 'success',
+            duration: 1000
+          })
+        })
+      })
     },
     handleSizeChange(val) {
       this.listQuery.pageNum = 1;

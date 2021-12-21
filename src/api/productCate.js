@@ -63,3 +63,15 @@ export function getProductCate(id) {
         method:'get',
     });
 }
+
+/**
+ * 删除商品分类
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function deleteProductCate(id) {
+    return httpClientUtils({
+        url:'/productCategory/delete/'+id,
+        method:'post'
+    })
+}

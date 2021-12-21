@@ -6,7 +6,7 @@
       <el-step title="填写商品属性"></el-step>
       <el-step title="选择商品关联"></el-step>
     </el-steps>
-    <ProductInfoDetail v-model="productParam"></ProductInfoDetail>
+    <ProductInfoDetail :is-edit="isEdit" v-model="productParam"></ProductInfoDetail>
   </el-card>
 </template>
 
@@ -77,6 +77,12 @@ const defaultProductParam = {
 };
 export default {
   name: "ProductDetail",
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {ProductInfoDetail},
   data() {
     return {
