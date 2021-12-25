@@ -2,7 +2,8 @@
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productAttrForm" label-width="120px" style="width: 720px" size="small">
       <el-form-item label="属性类型：">
-        <el-select v-model="value.productAttributeCategoryId" placeholder="请选择属性类型">
+        <el-select v-model="value.productAttributeCategoryId"
+                   placeholder="请选择属性类型" @change="handleProductAttrChange">
           <el-option v-for="item in productAttributeCategoryOptions"
                      :key="item.value"
                      :label="item.label"
@@ -22,13 +23,13 @@
               <el-checkbox-group v-model="selectProductAttr[idx].values">
                 <div v-for="(item,index) in selectProductAttr[idx].options" style="display: inline-block"
                      class="littleMarginLeft" :key="index">
-                  <el-checkbox :labe="item" :key="item"></el-checkbox>
-                  <el-button type="text" class="littleMarginLeft">删除
+                  <el-checkbox :label="item" :key="item"></el-checkbox>
+                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveProductAttrValue(idx,index)">删除
                   </el-button>
                 </div>
               </el-checkbox-group>
               <el-input v-model="addProductAttrValue" style="width: 160px;margin-left: 10px" clearable></el-input>
-              <el-button class="littleMarginLeft">增加</el-button>
+              <el-button class="littleMarginLeft" @click="handleAddProductAttrValue(idx)">增加</el-button>
             </div>
           </div>
         </el-card>
@@ -128,10 +129,10 @@
       <el-form-item label="规格参数：">
         <el-tabs v-model="activeHtmlName" type="card">
           <el-tab-pane label="电脑端详情" name="pc">
-            <tinymce :width="595" :height="300" v-model="value.detailHtml"></tinymce>
+            <Tinymce :width="595" :height="300" v-model="value.detailHtml"></Tinymce>
           </el-tab-pane>
           <el-tab-pane label="移动端详情" name="mobile">
-            <tinymce :width="595" :height="300" v-model="value.detailMobileHtml"></tinymce>
+            <Tinymce :width="595" :height="300" v-model="value.detailMobileHtml"></Tinymce>
           </el-tab-pane>
         </el-tabs>
       </el-form-item>
@@ -146,9 +147,11 @@
 <script>
 import MultiUpload from "@/components/Upload/Multi";
 import {getProductAttrCateList as productAttrCateList} from "@/api/productAttrCate";
+import {getProductAttrList as productAttrList} from '@/api/productAttr';
+import Tinymce from "@/components/Tinymce";
 export default {
   name: "ProductAttrDetail",
-  components: {MultiUpload},
+  components: {Tinymce, MultiUpload},
   props: {
     value: Object,
     isEdit: {
@@ -220,6 +223,171 @@ export default {
     },
   },
   methods: {
+    handleProductAttrChange(value) {
+      // 获取类型分类对应的属性列表
+      this.getProductAttrList(0, value);
+      // 获取类型分类对应的参数列表
+      this.getProductAttrList(1, value);
+    },
+    //获取设置的可手动添加属性值
+    getEditAttrOptions(id) {
+      let options = [];
+      for (let i = 0; i < this.value.productAttributeValueList.length; i++) {
+        let attrValue = this.value.productAttributeValueList[i];
+        if (attrValue.productAttributeId === id) {
+          let strArr = attrValue.value.split(',');
+          for (let j = 0; j < strArr.length; j++) {
+            options.push(strArr[j]);
+          }
+          break;
+        }
+      }
+      return options;
+    },
+    //获取选中的属性值
+    getEditAttrValues(index) {
+      let values = new Set();
+      if (index === 0) {
+        for (let i = 0; i < this.value.skuStockList.length; i++) {
+          let sku = this.value.skuStockList[i];
+          let spData = JSON.parse(sku.spData);
+          if (spData!= null && spData.length>=1) {
+            values.add(spData[0].value);
+          }
+        }
+      } else if (index === 1) {
+        for (let i = 0; i < this.value.skuStockList.length; i++) {
+          let sku = this.value.skuStockList[i];
+          let spData = JSON.parse(sku.spData);
+          if (spData!= null && spData.length>=2) {
+            values.add(spData[1].value);
+          }
+        }
+      } else {
+        for (let i = 0; i < this.value.skuStockList.length; i++) {
+          let sku = this.value.skuStockList[i];
+          let spData = JSON.parse(sku.spData);
+          if (spData!= null && spData.length>=3) {
+            values.add(spData[2].value);
+          }
+        }
+      }
+      return Array.from(values);
+    },
+    //获取商品相关属性的图片
+    getProductSkuPic(name){
+      for(let i=0;i<this.value.skuStockList.length;i++){
+        let spData = JSON.parse(this.value.skuStockList[i].spData);
+        if(name===spData[0].value){
+          return this.value.skuStockList[i].pic;
+        }
+      }
+      return null;
+    },
+    refreshProductAttrPics() {
+      this.selectProductAttrPics = [];
+      if (this.selectProductAttr.length >= 1) {
+        let values = this.selectProductAttr[0].values;
+        for (let i = 0; i < values.length; i++) {
+          let pic=null;
+          if(this.isEdit){
+            //编辑状态下获取图片
+            pic = this.getProductSkuPic(values[i]);
+          }
+          this.selectProductAttrPics.push({name: values[i], pic: pic})
+        }
+      }
+    },
+    //获取属性的值
+    getEditParamValue(id){
+      for(let i=0;i<this.value.productAttributeValueList.length;i++){
+        if(id===this.value.productAttributeValueList[i].productAttributeId){
+          return this.value.productAttributeValueList[i].value;
+        }
+      }
+    },
+    getProductAttrList(type, cid) {
+      let param= {pageNum: 1, pageSize: 100, type: type};
+      productAttrList(cid, param).then(response => {
+        let list = response.data.data.list;
+        if (type === 0) {
+          this.selectProductAttr = [];
+          for (let i = 0; i < list.length; i++) {
+            let options = [];
+            let values = [];
+            if (this.isEdit) {
+              if (list[i].handAddStatus === 1) {
+                // 编辑状态下获取手动添加编辑属性
+                //编辑状态下获取手动添加编辑属性
+                options = this.getEditAttrOptions(list[i].id);
+              }
+              //编辑状态下获取选中属性
+              values = this.getEditAttrValues(i);
+            }
+            this.selectProductAttr.push({
+              id: list[i].id,
+              name: list[i].name,
+              handAddStatus: list[i].handAddStatus,
+              inputList: list[i].inputList,
+              values: values,
+              options: options
+            });
+          }
+          if(this.isEdit){
+            //编辑模式下刷新商品属性图片
+            this.refreshProductAttrPics();
+          }
+        } else {
+          this.selectProductParam = [];
+          for (let i = 0; i < list.length; i++) {
+            let value=null;
+            if(this.isEdit){
+              //编辑模式下获取参数属性
+              value= this.getEditParamValue(list[i].id);
+            }
+            this.selectProductParam.push({
+              id: list[i].id,
+              name: list[i].name,
+              value: value,
+              inputType: list[i].inputType,
+              inputList: list[i].inputList
+            });
+          }
+        }
+      });
+    },
+    handleRemoveProductAttrValue(idx, index) {
+      this.selectProductAttr[idx].options.splice(index, 1);
+    },
+    handleAddProductAttrValue(idx) {
+      let options = this.selectProductAttr[idx].options;
+      if (this.addProductAttrValue == null || this.addProductAttrValue == '') {
+        this.$message({
+          message: '属性值不能为空',
+          type: 'warning',
+          duration: 1000
+        });
+        return
+      }
+      if (options.indexOf(this.addProductAttrValue) !== -1) {
+        this.$message({
+          message: '属性值不能重复',
+          type: 'warning',
+          duration: 1000
+        });
+        return;
+      }
+      this.selectProductAttr[idx].options.push(this.addProductAttrValue);
+      this.addProductAttrValue = null;
+    },
+    getProductSkuSp(row, index) {
+      let spData = JSON.parse(row.spData);
+      if(spData!=null&&index<spData.length){
+        return spData[index].value;
+      }else{
+        return null;
+      }
+    },
     getInputListArr(inputList) {
       return inputList.split(',');
     },
