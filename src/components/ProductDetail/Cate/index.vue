@@ -104,6 +104,7 @@ export default {
     } else {
       this.productCate = Object.assign({}, defaultProductCate);
     }
+    this.getSelectProductCateList();
     this.getProductAttrCateList();
   },
   props: {
@@ -154,7 +155,7 @@ export default {
     },
     getSelectProductCateList() {
       getFirstLevelProductCateList(0, {pageSize: 100, pageNum: 1}).then(response => {
-        this.selectProductCateList = response.data.list;
+        this.selectProductCateList = response.data.data.list;
         this.selectProductCateList.unshift({id: 0, name: '无上级分类'});
       });
     },

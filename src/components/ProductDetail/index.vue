@@ -1,18 +1,33 @@
 <template>
   <el-card class="form-container" shadow="never">
-    <el-steps finish-status="success" align-center>
+    <el-steps :active="active" finish-status="success" align-center>
       <el-step title="填写商品信息"></el-step>
       <el-step title="填写商品促销"></el-step>
       <el-step title="填写商品属性"></el-step>
       <el-step title="选择商品关联"></el-step>
     </el-steps>
-    <ProductInfoDetail :is-edit="isEdit" v-model="productParam"></ProductInfoDetail>
+    <ProductInfoDetail v-show="showStatus[0]" :is-edit="isEdit" v-model="productParam" @nextStep="nextStep">
+    </ProductInfoDetail>
+    <ProductSaleDetail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit"
+                       @nextStep="nextStep" @prevStep="prevStep">
+    </ProductSaleDetail>
+    <ProductAttrDetail v-show="showStatus[2]"
+                       v-model="productParam"
+                       :is-edit="isEdit"
+                       @nextStep="nextStep"
+                       @prevStep="prevStep">
+    </ProductAttrDetail>
+    <ProductRelationDetail v-show="showStatus[3]" v-model="productParam" :is-edit="isEdit" @prevStep="prevStep">
+    </ProductRelationDetail>
   </el-card>
 </template>
 
 <script>
 
 import ProductInfoDetail from "@/components/ProductDetail/Info";
+import ProductSaleDetail from "@/components/ProductDetail/Sale";
+import ProductAttrDetail from "@/components/ProductDetail/Attr";
+import ProductRelationDetail from "@/components/ProductDetail/Relation";
 
 const defaultProductParam = {
   albumPics: '',
@@ -83,11 +98,34 @@ export default {
       default: false
     }
   },
-  components: {ProductInfoDetail},
+  components: {ProductRelationDetail, ProductAttrDetail, ProductSaleDetail, ProductInfoDetail},
   data() {
     return {
+      active: 0,
+      showStatus: [true, false, false, false],
       productParam: Object.assign({}, defaultProductParam),
     }
+  },
+  methods: {
+    hideAll() {
+      for (let i = 0; i < this.showStatus.length; i++) {
+        this.showStatus[i] = false;
+      }
+    },
+    nextStep() {
+      if (this.active < this.showStatus.length -1) {
+        this.active++;
+        this.hideAll();
+        this.showStatus[this.active] = true;
+      }
+    },
+    prevStep() {
+      if (this.active > 0 && this.active < this.showStatus.length) {
+        this.active--;
+        this.hideAll();
+        this.showStatus[this.active] = true;
+      }
+    },
   }
 }
 </script>

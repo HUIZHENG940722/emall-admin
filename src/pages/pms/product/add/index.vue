@@ -1,5 +1,5 @@
 <template>
-  <ProductDetail></ProductDetail>
+  <ProductDetail :is-edit="false"></ProductDetail>
 </template>
 
 <script>

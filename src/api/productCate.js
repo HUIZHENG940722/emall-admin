@@ -72,6 +72,6 @@ export function getProductCate(id) {
 export function deleteProductCate(id) {
     return httpClientUtils({
         url:'/productCategory/delete/'+id,
-        method:'post'
+        method:'delete'
     })
 }

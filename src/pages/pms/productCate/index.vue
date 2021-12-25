@@ -18,7 +18,7 @@
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
         <el-table-column label="级别" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level}}</template>
+          <template slot-scope="scope">{{scope.row.level|levelFilter}}</template>
         </el-table-column>
         <el-table-column label="商品数量" width="100" align="center">
           <template slot-scope="scope">{{scope.row.productCount}}</template>
@@ -48,8 +48,10 @@
           <template slot-scope="scope">{{scope.row.sort}}</template>
         </el-table-column>
         <el-table-column label="设置" width="200" align="center">
-          <template slot-scope="">
-            <el-button size="mini">查看下级
+          <template slot-scope="scope">
+            <el-button size="mini"
+                       :disabled="scope.row.level|disableNextLevel"
+                       @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
             </el-button>
             <el-button size="mini">转移商品
             </el-button>
@@ -91,7 +93,14 @@ import {deleteProductCate, getFirstLevelProductCateList} from "@/api/productCate
 export default {
   name: "ProductCateList",
   created() {
-    this.getFirstProductCateList();
+    this.resetParentId();
+    this.getProductCateListForP();
+  },
+  watch: {
+    $route() {
+      this.resetParentId();
+      this.getProductCateListForP();
+    }
   },
   data() {
     return {
@@ -105,7 +114,15 @@ export default {
     }
   },
   methods: {
-    getFirstProductCateList() {
+    resetParentId(){
+      this.listQuery.pageNum = 1;
+      if (this.$route.query.parentId != null) {
+        this.parentId = this.$route.query.parentId;
+      } else {
+        this.parentId = 0;
+      }
+    },
+    getProductCateListForP() {
       getFirstLevelProductCateList(this.parentId, this.listQuery).then(response => {
         this.list = response.data.data.list;
         this.total = response.data.data.total;
@@ -113,6 +130,14 @@ export default {
     },
     handleAddProductCate() {
       this.$router.push('/pms/addProductCate');
+    },
+    handleShowNextLevel(index, row) {
+      this.$router.push({
+        path: '/pms/productCate',
+        query: {
+          parentId: row.id
+        }
+      });
     },
     handleUpdate(index, row) {
       this.$router.push({
@@ -133,18 +158,35 @@ export default {
             message: '删除成功',
             type: 'success',
             duration: 1000
-          })
+          });
+          this.getProductCateListForP();
         })
       })
     },
     handleSizeChange(val) {
       this.listQuery.pageNum = 1;
       this.listQuery.pageSize = val;
-      this.getFirstProductCateList();
+      this.getProductCateListForP();
     },
     handleCurrentChange(val) {
       this.listQuery.pageNum = val;
-      this.getFirstProductCateList();
+      this.getProductCateListForP();
+    }
+  },
+  filters: {
+    levelFilter(value) {
+      if (value === 0) {
+        return '一级';
+      } else if (value === 1) {
+        return '二级';
+      }
+    },
+    disableNextLevel(val) {
+      if (val === 0) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 }
