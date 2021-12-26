@@ -153,6 +153,8 @@
 </template>
 
 <script>
+import {getAdminList} from "@/api/admin";
+
 const defaultListQuery = {
   pageNum: 1,
   pageSize: 10,
@@ -184,7 +186,18 @@ export default {
       allocAdminId:null
     }
   },
+  created() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      this.listLoading = true;
+      getAdminList(this.listQuery).then(response => {
+        this.listLoading = false;
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
+      });
+    },
     handleSearchList() {
 
     },
