@@ -49,7 +49,7 @@
           <template slot-scope="scope">{{scope.row.email}}</template>
         </el-table-column>
         <el-table-column label="添加时间" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
+          <template slot-scope="scope">{{scope.row.createdTime | formatDateTime}}</template>
         </el-table-column>
         <el-table-column label="最后登录" width="160" align="center">
           <template slot-scope="scope">{{scope.row.loginTime | formatDateTime}}</template>
@@ -153,7 +153,8 @@
 </template>
 
 <script>
-import {getAdminList} from "@/api/admin";
+import {getAdminList, registerAdmin, updateAdmin} from "@/api/admin";
+import {formatDate} from "@/utils/dateUtils";
 
 const defaultListQuery = {
   pageNum: 1,
@@ -204,7 +205,9 @@ export default {
     handleResetSearch() {
     },
     handleAdd() {
-
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.admin = Object.assign({}, defaultAdmin);
     },
     handleStatusChange(index, row) {
       console.log(index, row);
@@ -213,7 +216,9 @@ export default {
       console.log(index, row);
     },
     handleUpdate(index, row) {
-      console.log(index, row);
+      this.dialogVisible = true;
+      this.isEdit = true;
+      this.admin = Object.assign({}, row);
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -225,11 +230,44 @@ export default {
       console.log(val)
     },
     handleDialogConfirm() {
-
+      this.$confirm('是否要确认？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) {
+          updateAdmin(this.admin.id, this.admin).then(() => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          });
+        } else {
+          registerAdmin(this.admin).then(() => {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          });
+        }
+      })
     },
     handleAllocDialogConfirm(){
 
     },
+  },
+  filters: {
+    formatDateTime(time) {
+      if (time == null || time === '') {
+        return 'N/A';
+      }
+      let date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    }
   }
 }
 </script>
