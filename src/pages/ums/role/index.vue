@@ -49,7 +49,7 @@
           <template slot-scope="scope">{{scope.row.adminCount}}</template>
         </el-table-column>
         <el-table-column label="添加时间" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.createTime | formatDateTime}}</template>
+          <template slot-scope="scope">{{scope.row.createdTime | formatDateTime}}</template>
         </el-table-column>
         <el-table-column label="是否启用" width="140" align="center">
           <template slot-scope="scope">
@@ -132,6 +132,9 @@
 </template>
 
 <script>
+import {createRole, getRoleList, updateRole} from "@/api/role";
+import {formatDate} from "@/utils/dateUtils";
+
 const defaultListQuery = {
   pageNum: 1,
   pageSize: 5,
@@ -157,7 +160,18 @@ export default {
       isEdit: false
     }
   },
+  created() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      this.listLoading = true;
+      getRoleList(this.listQuery).then(response => {
+        this.listLoading = false;
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
+      })
+    },
     handleSearchList() {
 
     },
@@ -165,7 +179,12 @@ export default {
 
     },
     handleAdd() {
-
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.role = Object.assign({}, defaultRole);
+    },
+    handleStatusChange(index, row) {
+      console.log(index, row);
     },
     handleSelectMenu(index,row){
       console.log(index, row);
@@ -174,7 +193,9 @@ export default {
       console.log(index, row);
     },
     handleUpdate(index, row) {
-      console.log(index, row);
+      this.dialogVisible = true;
+      this.isEdit = true;
+      this.role = Object.assign({}, row);
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -186,9 +207,42 @@ export default {
       console.log(val);
     },
     handleDialogConfirm() {
-
+      this.$confirm('是否要确定？', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) {
+          updateRole(this.role.id,this.role).then(() => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          });
+        } else {
+          createRole(this.role).then(() => {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          })
+        }
+      });
     },
-  }
+  },
+  filters: {
+    formatDateTime(time) {
+      if (time == null || time === '') {
+        return 'N/A';
+      }
+      let date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    }
+  },
 }
 </script>
 
