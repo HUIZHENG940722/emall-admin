@@ -105,6 +105,12 @@ export default {
     this.resetParentId();
     this.getList();
   },
+  watch: {
+    $route() {
+      this.resetParentId();
+      this.getList();
+    }
+  },
   methods: {
     // 重置父菜单id
     resetParentId(){
@@ -124,15 +130,26 @@ export default {
       });
     },
     handleAddMenu() {
-
+      this.$router.push('/ums/addMenu');
     },
     handleHiddenChange(index, row) {
       console.log(index, row);
     },
     handleShowNextLevel(index, row) {
-      console.log(index, row);
+      this.$router.push({
+        path: '/ums/menu',
+        query: {
+          parentId: row.id
+        }
+      })
     },
     handleUpdate(index, row) {
+      this.$router.push({
+        path: '/ums/updateMenu',
+        query: {
+          id: row.id
+        }
+      })
       console.log(index, row);
     },
     handleDelete(index, row) {

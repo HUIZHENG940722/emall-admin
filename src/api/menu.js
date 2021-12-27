@@ -13,3 +13,16 @@ export function getMenuListByP(parentId, params) {
         params: params
     })
 }
+
+/**
+ * 创建菜单
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function createMenu(data) {
+    return httpClientUtils({
+        url: '/menu/create',
+        method: 'post',
+        data: data
+    })
+}

@@ -1,10 +1,12 @@
 <template>
-  <h2>添加菜单</h2>
+  <MenuDetail :is-edit="false"></MenuDetail>
 </template>
 
 <script>
+import MenuDetail from "@/components/MenuDetail";
 export default {
-  name: "index"
+  name: "AddMenu",
+  components: {MenuDetail},
 }
 </script>
 

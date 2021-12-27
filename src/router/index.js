@@ -44,7 +44,7 @@ export const firstRouterMap = [
                 path: 'addProduct',
                 name: 'addProduct',
                 component: ()=> import('@/pages/pms/product/add'),
-                meta: {title: '添加商品', icon: 'Product-add'}
+                meta: {title: '添加商品', icon: 'product-add'}
             },
             {
                 path: 'updateProduct',
@@ -57,7 +57,7 @@ export const firstRouterMap = [
                 path: 'productCate',
                 name: 'productCate',
                 component: ()=> import('@/pages/pms/productCate'),
-                meta: {title: '商品分类', icon: 'Product-cate'}
+                meta: {title: '商品分类', icon: 'product-cate'}
             },
             {
                 path: 'addProductCate',

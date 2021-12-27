@@ -1,10 +1,206 @@
 <template>
-  <h2>资源劣币哦啊</h2>
+  <div class="app-container">
+    <el-card class="filter-container" shadow="never">
+      <div>
+        <i class="el-icon-search"></i>
+        <span>筛选搜索</span>
+        <el-button
+            style="float:right"
+            type="primary"
+            @click="handleSearchList()"
+            size="small">
+          查询搜索
+        </el-button>
+        <el-button
+            style="float:right;margin-right: 15px"
+            @click="handleResetSearch()"
+            size="small">
+          重置
+        </el-button>
+      </div>
+      <div style="margin-top: 15px">
+        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
+          <el-form-item label="资源名称：">
+            <el-input v-model="listQuery.nameKeyword" class="input-width" placeholder="资源名称" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资源路径：">
+            <el-input v-model="listQuery.urlKeyword" class="input-width" placeholder="资源路径" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="资源分类：">
+            <el-select v-model="listQuery.categoryId" placeholder="全部" clearable class="input-width">
+              <el-option v-for="item in categoryOptions"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets"></i>
+      <span>数据列表</span>
+      <el-button size="mini" class="btn-add" @click="handleAdd()" style="margin-left: 20px">添加</el-button>
+      <el-button size="mini" class="btn-add" @click="handleShowCategory()">资源分类</el-button>
+    </el-card>
+    <div class="table-container">
+      <el-table ref="resourceTable"
+                :data="list"
+                style="width: 100%;"
+                v-loading="listLoading" border>
+        <el-table-column label="编号" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.id}}</template>
+        </el-table-column>
+        <el-table-column label="资源名称" align="center">
+          <template slot-scope="scope">{{scope.row.name}}</template>
+        </el-table-column>
+        <el-table-column label="资源路径" align="center">
+          <template slot-scope="scope">{{scope.row.url}}</template>
+        </el-table-column>
+        <el-table-column label="描述" align="center">
+          <template slot-scope="scope">{{scope.row.description}}</template>
+        </el-table-column>
+        <el-table-column label="添加时间" width="160" align="center">
+          <template slot-scope="scope">{{scope.row.createdTime | formatDateTime}}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="140" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini"
+                       type="text"
+                       @click="handleUpdate(scope.$index, scope.row)">
+              编辑
+            </el-button>
+            <el-button size="mini"
+                       type="text"
+                       @click="handleDelete(scope.$index, scope.row)">删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="pagination-container">
+      <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          layout="total, sizes,prev, pager, next,jumper"
+          :current-page.sync="listQuery.pageNum"
+          :page-size="listQuery.pageSize"
+          :page-sizes="[10,15,20]"
+          :total="total">
+      </el-pagination>
+    </div>
+    <el-dialog
+        :title="isEdit?'编辑资源':'添加资源'"
+        :visible.sync="dialogVisible"
+        width="40%">
+      <el-form :model="resource"
+               ref="resourceForm"
+               label-width="150px" size="small">
+        <el-form-item label="资源名称：">
+          <el-input v-model="resource.name" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="资源路径：">
+          <el-input v-model="resource.url" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="资源分类：">
+          <el-select v-model="resource.categoryId" placeholder="全部" clearable style="width: 250px">
+            <el-option v-for="item in categoryOptions"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="描述：">
+          <el-input v-model="resource.description"
+                    type="textarea"
+                    :rows="5"
+                    style="width: 250px"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+import {formatDate} from "@/utils/dateUtils";
+
+const defaultListQuery = {
+  pageNum: 1,
+  pageSize: 10,
+  nameKeyword: null,
+  urlKeyword: null,
+  categoryId:null
+};
+const defaultResource = {
+  id: null,
+  name: null,
+  url: null,
+  categoryId: null,
+  description:''
+};
 export default {
-  name: "index"
+  name: "ResourceList",
+  data() {
+    return {
+      listQuery: Object.assign({}, defaultListQuery),
+      categoryOptions:[],
+      list: null,
+      total: null,
+      listLoading: false,
+      dialogVisible: false,
+      resource: Object.assign({}, defaultResource),
+      isEdit: false,
+    }
+  },
+  created() {
+  },
+  filters: {
+    formatDateTime(time) {
+      if (time == null || time === '') {
+        return 'N/A';
+      }
+      let date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    }
+  },
+  methods: {
+    handleSearchList() {
+
+    },
+    handleResetSearch() {
+
+    },
+    handleAdd() {
+
+    },
+    handleShowCategory(){
+      this.$router.push({
+        path: '/ums/resourceCategory',
+      })
+    },
+    handleUpdate(index, row) {
+      console.log(index, row);
+    },
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
+    handleSizeChange(val) {
+      console.log(val);
+    },
+    handleCurrentChange(val) {
+      console.log(val);
+    },
+    handleDialogConfirm() {
+
+    },
+  }
 }
 </script>
 
