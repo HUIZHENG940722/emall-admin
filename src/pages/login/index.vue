@@ -1,60 +1,148 @@
 <template>
   <div>
     <el-card class="login-form-layout">
-      <el-form label-position="left">
+      <el-form autoComplete="on"
+               :model="loginForm"
+               :rules="loginRules"
+               ref="loginForm"
+               label-position="left">
         <div style="text-align: center">
-          <svg-icon icon-class="login-mall" style="width: 56px;height: 56px;color: #409EFF"/>
+          <svg-icon icon-class="login-mall" style="width: 56px;height: 56px;color: #409EFF"></svg-icon>
         </div>
         <h2 class="login-title color-main">mall-admin-web</h2>
         <el-form-item prop="username">
-          <el-input name="username" v-model="loginForm.username" type="text" placeholder="请输入用户名">
-            <span slot="prefix">
-              <svg-icon icon-class="user" class-name="color-main"/>
-            </span>
+          <el-input name="username"
+                    type="text"
+                    v-model="loginForm.username"
+                    autoComplete="on"
+                    placeholder="请输入用户名">
+          <span slot="prefix">
+            <svg-icon icon-class="user" class="color-main"></svg-icon>
+          </span>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input name="password" v-model="loginForm.password" type="password" placeholder="请输入密码">
-            <span slot="prefix">
-              <svg-icon icon-class="password" class="color-main"></svg-icon>
-            </span>
-            <span slot="suffix">
-              <svg-icon icon-class="eye" class="color-main"></svg-icon>
-            </span>
+          <el-input name="password"
+                    :type="pwdType"
+                    @keyup.enter.native="handleLogin"
+                    v-model="loginForm.password"
+                    autoComplete="on"
+                    placeholder="请输入密码">
+          <span slot="prefix">
+            <svg-icon icon-class="password" class="color-main"></svg-icon>
+          </span>
+            <span slot="suffix" @click="showPwd">
+            <svg-icon icon-class="eye" class="color-main"></svg-icon>
+          </span>
           </el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 60px;text-align: center">
-          <el-button style="width: 45%" @click="login">
+          <el-button style="width: 45%" type="primary" :loading="loading" @click.native.prevent="handleLogin">
             登录
           </el-button>
-          <el-button style="width: 45%">
+          <el-button style="width: 45%" type="primary" @click.native.prevent="handleTry">
             获取体验账号
           </el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <img :src="login_center_bg" class="login-center-layout">
+    <el-dialog
+        title="公众号二维码"
+        :visible.sync="dialogVisible"
+        :show-close="false"
+        :center="true"
+        width="30%">
+      <div style="text-align: center">
+        <span class="font-title-large"><span class="color-main font-extra-large">关注公众号</span>回复<span class="color-main font-extra-large">体验</span>获取体验账号</span>
+        <br>
+        <img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/banner/qrcode_for_macrozheng_258.jpg" width="160" height="160" style="margin-top: 10px">
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="dialogConfirm">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import login_center_bg from '@/assets/login_center_bg.png';
-// import router, {firstRouterMap} from "@/router";
-
+import {isValidUsername} from "@/utils/validate";
+import {adminLogin} from "@/api/admin";
+import {setCookie, setToken} from "@/utils/cookieUtil";
 export default {
   name: "Login",
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if (!isValidUsername(value)) {
+        callback(new Error('请输入正确的用户名'))
+      } else {
+        callback()
+      }
+    };
+    const validatePass = (rule, value, callback) => {
+      if (value.length < 3) {
+        callback(new Error('密码不能小于3位'))
+      } else {
+        callback()
+      }
+    };
     return {
-      login_center_bg,
       loginForm: {
         username: '',
         password: '',
       },
+      loginRules: {
+        username: [{required: true, trigger: 'blur', validator: validateUsername}],
+        password: [{required: true, trigger: 'blur', validator: validatePass}]
+      },
+      pwdType: 'password',
+      loading: false,
+      login_center_bg,
+      dialogVisible:false,
     }
   },
   methods: {
-    login() {
-      this.$router.push({path: '/'});
+    handleLogin() {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          adminLogin(this.loginForm.username.trim(), this.loginForm.password.trim()).then(response => {
+            const data = response.data.data;
+            const tokenStr = data.tokenHead + data.token;
+            setToken(tokenStr);
+            console.log('获取的token信息', tokenStr);
+            setCookie("username", this.loginForm.username, 15);
+            setCookie("password", this.loginForm.password, 15);
+            this.$router.push({path: '/'});
+          }).catch(() => {
+            this.loading = false;
+          });
+          /*return new Promise((resolve, reject) => {
+            adminLogin(this.loginForm.username, this.loginForm.password).then(response => {
+              const data = response.data.data;
+              const tokenStr = data.tokenHead + data.token;
+              setToken(tokenStr);
+              this.loading = false;
+              resolve();
+            }).catch(error => {
+              reject(error);
+            });
+          });*/
+        } else {
+          console.log('参数校验不合法');
+          return false;
+        }
+      })
+    },
+    showPwd() {
+
+    },
+    handleTry(){
+
+    },
+    dialogConfirm(){
+
     },
   }
 }

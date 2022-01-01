@@ -60,6 +60,7 @@
 
 <script>
 import {formatDate} from "@/utils/dateUtils";
+import {createResourceCategory, listAllCate, updateResourceCategory} from "@/api/resourceCategory";
 
 const defaultResourceCategory={
   name:null,
@@ -76,18 +77,57 @@ export default {
       resourceCategory:Object.assign({},defaultResourceCategory)
     }
   },
+  created() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      this.listLoading = true;
+      listAllCate().then(response => {
+        this.listLoading = false;
+        this.list = response.data.data;
+      });
+    },
     handleAdd() {
-
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.resourceCategory = Object.assign({}, defaultResourceCategory);
     },
     handleUpdate(index,row){
-      console.log(index, row)
+      this.dialogVisible = true;
+      this.isEdit = true;
+      this.resourceCategory = Object.assign({},row);
+      console.log('编辑与否', this.isEdit);
     },
     handleDelete(index,row){
       console.log(index, row);
     },
     handleDialogConfirm() {
-
+      this.$confirm('是否确定', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) {
+          updateResourceCategory(this.resourceCategory.id,this.resourceCategory).then(() => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          });
+        } else {
+          createResourceCategory(this.resourceCategory).then(() => {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          });
+        }
+      });
     },
   },
   filters: {

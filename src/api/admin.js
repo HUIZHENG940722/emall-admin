@@ -10,7 +10,7 @@ export function getAdminList(params) {
         url: '/admin/list',
         method: 'get',
         params: params
-    })
+    });
 }
 
 /**
@@ -23,7 +23,7 @@ export function registerAdmin(data) {
         url: '/admin/register',
         method: 'post',
         data: data
-    })
+    });
 }
 
 /**
@@ -37,5 +37,22 @@ export function updateAdmin(id, data) {
         url: '/admin/update/' + id,
         method: 'put',
         data: data
-    })
+    });
+}
+
+/**
+ * 登录获取token
+ * @param username
+ * @param password
+ * @returns {*}
+ */
+export function adminLogin(username, password) {
+    return httpClientUtils({
+        url: '/admin/login',
+        method: 'post',
+        data: {
+            username,
+            password
+        }
+    });
 }

@@ -130,6 +130,8 @@
 
 <script>
 import {formatDate} from "@/utils/dateUtils";
+import {listAllCate} from "@/api/resourceCategory";
+import {createResource, getResourceList} from "@/api/resource";
 
 const defaultListQuery = {
   pageNum: 1,
@@ -157,9 +159,12 @@ export default {
       dialogVisible: false,
       resource: Object.assign({}, defaultResource),
       isEdit: false,
+      defaultCategoryId: null,
     }
   },
   created() {
+    this.getList();
+    this.getCateList();
   },
   filters: {
     formatDateTime(time) {
@@ -171,6 +176,24 @@ export default {
     }
   },
   methods: {
+    getCateList(){
+      listAllCate().then(response=>{
+        let cateList = response.data.data;
+        for(let i=0;i<cateList.length;i++){
+          let cate = cateList[i];
+          this.categoryOptions.push({label:cate.name,value:cate.id});
+        }
+        this.defaultCategoryId=cateList[0].id;
+      });
+    },
+    getList() {
+      this.listLoading = true;
+      getResourceList(this.listQuery).then(response => {
+        this.listLoading = false;
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
+      });
+    },
     handleSearchList() {
 
     },
@@ -178,7 +201,10 @@ export default {
 
     },
     handleAdd() {
-
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.resource = Object.assign({}, defaultListQuery);
+      this.resource.categoryId = this.defaultCategoryId;
     },
     handleShowCategory(){
       this.$router.push({
@@ -192,13 +218,33 @@ export default {
       console.log(index, row);
     },
     handleSizeChange(val) {
-      console.log(val);
+      this.listQuery.pageNum = 1;
+      this.listQuery.pageSize = val;
+      this.getList();
     },
     handleCurrentChange(val) {
-      console.log(val);
+      this.listQuery.pageNum = val;
+      this.getList();
     },
     handleDialogConfirm() {
-
+      this.$confirm('是否要确定?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) {
+          console.log('执行更新资源');
+        } else {
+          createResource(this.resource).then(() => {
+            this.$message({
+              message: '添加成功!',
+              type: 'success'
+            });
+            this.dialogVisible = false;
+            this.getList();
+          });
+        }
+      })
     },
   }
 }
