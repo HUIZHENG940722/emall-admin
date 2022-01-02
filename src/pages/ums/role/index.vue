@@ -168,8 +168,8 @@ export default {
       this.listLoading = true;
       getRoleList(this.listQuery).then(response => {
         this.listLoading = false;
-        this.list = response.data.data.list;
-        this.total = response.data.data.total;
+        this.list = response.data.list;
+        this.total = response.data.total;
       })
     },
     handleSearchList() {
@@ -187,7 +187,7 @@ export default {
       console.log(index, row);
     },
     handleSelectMenu(index,row){
-      console.log(index, row);
+      this.$router.push({path:'/ums/allocMenu',query:{roleId:row.id}})
     },
     handleSelectResource(index,row){
       console.log(index, row);

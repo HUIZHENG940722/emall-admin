@@ -336,6 +336,8 @@ export default {
           }
           this.productCateOptions.push({label: list[i].name, value: list[i].id, children: children});
         }
+      }).catch(error => {
+        console.log(error);
       });
     },
     getProductBrandList() {

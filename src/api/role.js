@@ -39,3 +39,28 @@ export function updateRole(id, data) {
         data: data
     })
 }
+
+/**
+ * 角色分配菜单
+ * @param data
+ * @returns {*}
+ */
+export function allocMenu(data) {
+    return httpClientUtils({
+        url: '/role/allocMenu',
+        method: 'post',
+        data:data
+    })
+}
+
+/**
+ * 获取角色对应的菜单列表
+ * @param roleId
+ * @returns {*}
+ */
+export function getMenuListByRole(roleId) {
+    return httpClientUtils({
+        url: '/role/menuList/'+roleId,
+        method: 'get'
+    })
+}

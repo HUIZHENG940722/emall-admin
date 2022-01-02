@@ -68,8 +68,7 @@
 <script>
 import login_center_bg from '@/assets/login_center_bg.png';
 import {isValidUsername} from "@/utils/validate";
-import {adminLogin} from "@/api/admin";
-import {setCookie, setToken} from "@/utils/cookieUtil";
+import {setCookie} from "@/utils/cookieUtil";
 export default {
   name: "Login",
   data() {
@@ -107,30 +106,15 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          adminLogin(this.loginForm.username.trim(), this.loginForm.password.trim()).then(response => {
-            const data = response.data.data;
-            const tokenStr = data.tokenHead + data.token;
-            setToken(tokenStr);
-            console.log('获取的token信息', tokenStr);
+          this.$store.dispatch('Login', this.loginForm).then(() => {
+            this.loading = false;
             setCookie("username", this.loginForm.username, 15);
             setCookie("password", this.loginForm.password, 15);
             this.$router.push({path: '/'});
           }).catch(() => {
             this.loading = false;
-          });
-          /*return new Promise((resolve, reject) => {
-            adminLogin(this.loginForm.username, this.loginForm.password).then(response => {
-              const data = response.data.data;
-              const tokenStr = data.tokenHead + data.token;
-              setToken(tokenStr);
-              this.loading = false;
-              resolve();
-            }).catch(error => {
-              reject(error);
-            });
-          });*/
+          })
         } else {
-          console.log('参数校验不合法');
           return false;
         }
       })

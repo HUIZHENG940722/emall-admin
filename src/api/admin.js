@@ -56,3 +56,25 @@ export function adminLogin(username, password) {
         }
     });
 }
+
+/**
+ * 获取后台用户信息
+ * @returns {*}
+ */
+export function getAdminInfo() {
+    return httpClientUtils({
+        url: '/admin/info',
+        method: 'get',
+    })
+}
+
+/**
+ * 后端登出
+ * @returns {*}
+ */
+export function adminLogout() {
+    return httpClientUtils({
+        url: '/admin/logout',
+        method: 'post'
+    })
+}

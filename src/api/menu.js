@@ -26,3 +26,14 @@ export function createMenu(data) {
         data: data
     })
 }
+
+/**
+ * 获取菜单术列表
+ * @returns {*}
+ */
+export function getMenuTreeList() {
+    return httpClientUtils({
+        url: '/menu/treeList',
+        method: 'get'
+    })
+}

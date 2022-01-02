@@ -195,8 +195,10 @@ export default {
       this.listLoading = true;
       getAdminList(this.listQuery).then(response => {
         this.listLoading = false;
-        this.list = response.data.data.list;
-        this.total = response.data.data.total;
+        this.list = response.data.list;
+        this.total = response.data.total;
+      }).catch(error => {
+        console.log('获取用户列表失败信息', error);
       });
     },
     handleSearchList() {

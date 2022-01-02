@@ -1,10 +1,10 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <Hamburger class="hamburger-container"></Hamburger>
-    <Breadcrumb></Breadcrumb>
+    <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+    <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar">
+        <img class="user-avatar" :src="avatar">
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -14,7 +14,7 @@
           </el-dropdown-item>
         </router-link>
         <el-dropdown-item divided>
-          <span style="display:block;">退出</span>
+          <span @click="logout" style="display:block;">退出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -24,9 +24,28 @@
 <script>
 import Hamburger from "@/components/Hamburger";
 import Breadcrumb from '@/components/Breadcrumb';
+import {mapGetters} from 'vuex';
 export default {
   name: "Navbar",
   components: {Hamburger, Breadcrumb},
+  data() {
+    return {
+      ...mapGetters([
+        'sidebar',
+        'avatar'
+      ])
+    }
+  },
+  methods: {
+    toggleSideBar() {
+
+    },
+    logout() {
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload();
+      });
+    }
+  }
 }
 </script>
 

@@ -125,8 +125,8 @@ export default {
       this.listLoading = true;
       getMenuListByP(this.parentId, this.listQuery).then(response => {
         this.listLoading = false;
-        this.list = response.data.data.list;
-        this.total = response.data.data.total;
+        this.list = response.data.list;
+        this.total = response.data.total;
       });
     },
     handleAddMenu() {

@@ -178,7 +178,7 @@ export default {
   methods: {
     getCateList(){
       listAllCate().then(response=>{
-        let cateList = response.data.data;
+        let cateList = response.data;
         for(let i=0;i<cateList.length;i++){
           let cate = cateList[i];
           this.categoryOptions.push({label:cate.name,value:cate.id});
@@ -190,8 +190,8 @@ export default {
       this.listLoading = true;
       getResourceList(this.listQuery).then(response => {
         this.listLoading = false;
-        this.list = response.data.data.list;
-        this.total = response.data.data.total;
+        this.list = response.data.list;
+        this.total = response.data.total;
       });
     },
     handleSearchList() {
