@@ -190,7 +190,7 @@ export default {
       this.$router.push({path:'/ums/allocMenu',query:{roleId:row.id}})
     },
     handleSelectResource(index,row){
-      console.log(index, row);
+      this.$router.push({path:'/ums/allocResource',query:{roleId:row.id}});
     },
     handleUpdate(index, row) {
       this.dialogVisible = true;

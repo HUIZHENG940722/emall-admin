@@ -68,7 +68,7 @@
 <script>
 import login_center_bg from '@/assets/login_center_bg.png';
 import {isValidUsername} from "@/utils/validate";
-import {setCookie} from "@/utils/cookieUtil";
+
 export default {
   name: "Login",
   data() {
@@ -108,8 +108,6 @@ export default {
           this.loading = true;
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false;
-            setCookie("username", this.loginForm.username, 15);
-            setCookie("password", this.loginForm.password, 15);
             this.$router.push({path: '/'});
           }).catch(() => {
             this.loading = false;

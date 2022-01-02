@@ -64,3 +64,28 @@ export function getMenuListByRole(roleId) {
         method: 'get'
     })
 }
+
+/**
+ * 根据角色获取资源列表
+ * @param roleId
+ * @returns {*}
+ */
+export function getResourceListByRole(roleId) {
+    return httpClientUtils({
+        url: '/role/listResource/'+roleId,
+        method: 'get'
+    })
+}
+
+/**
+ * 角色分配资源
+ * @param data
+ * @returns {*}
+ */
+export function allocResource(data) {
+    return httpClientUtils({
+        url: '/role/allocResource',
+        method: 'post',
+        data: data
+    })
+}

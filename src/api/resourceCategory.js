@@ -37,3 +37,14 @@ export function updateResourceCategory(id, data) {
         data: data
     })
 }
+
+/**
+ * 获取所有的资源分类列表
+ * @returns {*}
+ */
+export function getAllCateList() {
+    return httpClientUtils({
+        url: '/resourceCategory/listAll',
+        method: 'get'
+    })
+}

@@ -39,3 +39,14 @@ export function getResourceList(params) {
         params: params
     })
 }
+
+/**
+ * 获取所有的资源分类列表
+ * @returns {*}
+ */
+export function getAllResourceList() {
+    return httpClientUtils({
+        url: '/resource/listAll',
+        method: 'get'
+    })
+}

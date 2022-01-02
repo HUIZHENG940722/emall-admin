@@ -161,6 +161,22 @@ export default {
     handleCurrentChange(val) {
       console.log(val);
     },
+  },
+  filters: {
+    disableNextLevel(value) {
+      if (value === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    levelFilter(value) {
+      if (value === 0) {
+        return '一级';
+      } else if (value === 1) {
+        return '二级';
+      }
+    },
   }
 }
 </script>
