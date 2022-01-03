@@ -153,8 +153,9 @@
 </template>
 
 <script>
-import {getAdminList, registerAdmin, updateAdmin} from "@/api/admin";
+import {allocRole, getAdminList, getRoleListByAdminId, registerAdmin, updateAdmin} from "@/api/admin";
 import {formatDate} from "@/utils/dateUtils";
+import {getAllRoleList} from "@/api/role";
 
 const defaultListQuery = {
   pageNum: 1,
@@ -189,8 +190,20 @@ export default {
   },
   created() {
     this.getList();
+    this.listAllRole();
   },
   methods: {
+    getRoleListByAdmin(adminId) {
+      getRoleListByAdminId(adminId).then(response => {
+        let allocRoleList = response.data;
+        this.allocRoleIds=[];
+        if(allocRoleList!=null&&allocRoleList.length>0){
+          for(let i=0;i<allocRoleList.length;i++){
+            this.allocRoleIds.push(allocRoleList[i].id);
+          }
+        }
+      });
+    },
     getList() {
       this.listLoading = true;
       getAdminList(this.listQuery).then(response => {
@@ -199,6 +212,11 @@ export default {
         this.total = response.data.total;
       }).catch(error => {
         console.log('获取用户列表失败信息', error);
+      });
+    },
+    listAllRole() {
+      getAllRoleList().then(response => {
+        this.allRoleList = response.data;
       });
     },
     handleSearchList() {
@@ -215,7 +233,9 @@ export default {
       console.log(index, row);
     },
     handleSelectRole(index,row){
-      console.log(index, row);
+      this.allocAdminId = row.id;
+      this.allocDialogVisible = true;
+      this.getRoleListByAdmin(row.id);
     },
     handleUpdate(index, row) {
       this.dialogVisible = true;
@@ -259,7 +279,22 @@ export default {
       })
     },
     handleAllocDialogConfirm(){
-
+      this.$confirm('是否要确认?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let params = new URLSearchParams();
+        params.append("adminId", this.allocAdminId);
+        params.append("roleIds", this.allocRoleIds);
+        allocRole(params).then(() => {
+          this.$message({
+            message: '分配成功！',
+            type: 'success'
+          });
+          this.allocDialogVisible = false;
+        });
+      });
     },
   },
   filters: {

@@ -89,3 +89,14 @@ export function allocResource(data) {
         data: data
     })
 }
+
+/**
+ * 获取所有的角色列表
+ * @returns {*}
+ */
+export function getAllRoleList() {
+    return httpClientUtils({
+        url: '/role/listAll',
+        method: 'get'
+    })
+}

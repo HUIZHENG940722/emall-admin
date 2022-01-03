@@ -78,3 +78,28 @@ export function adminLogout() {
         method: 'post'
     })
 }
+
+/**
+ * 根据用户id获取角色列表
+ * @param id
+ * @returns {*}
+ */
+export function getRoleListByAdminId(id) {
+    return httpClientUtils({
+        url: '/admin/role/' + id,
+        method: 'get'
+    })
+}
+
+/**
+ * 用户分配角色
+ * @param data
+ * @returns {*}
+ */
+export function allocRole(data) {
+    return httpClientUtils({
+        url: '/admin/role/update',
+        method: 'post',
+        data: data
+    })
+}
