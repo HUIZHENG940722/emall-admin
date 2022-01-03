@@ -3,6 +3,7 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import {getToken} from "@/utils/cookieUtil";
 import store from "@/store";
+import {Message} from "element-ui";
 
 // 不重定向白名单
 const whiteList = ['/login']
@@ -18,14 +19,20 @@ router.beforeEach((to, from, next) => {
                     let menus = res.data.menus;
                     let username = res.data.username;
                     store.dispatch('GenerateRoutes', {menus, username}).then(() => {
-                        store.getters.addRoutes.forEach(item => {
+                        store.getters.addRouteMap.forEach(item => {
                             router.addRoute(item);
                         });
                         next({...to, replace: true});
-                    })
+                    }).catch(error => {
+                        store.dispatch('FedLogOut').then(() => {
+                            Message.error(error || 'Verification failed, please login again');
+                            next({path: '/'});
+                        });
+                    });
                 });
+            } else {
+                next();
             }
-            next();
         }
     } else {
         if (whiteList.indexOf(to.path) !== -1) {

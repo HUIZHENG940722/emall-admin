@@ -6,7 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '@/icons';
 import '@/styles/index.scss';
 import store from './store';
-// import '@/permission';
+import '@/permission';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);

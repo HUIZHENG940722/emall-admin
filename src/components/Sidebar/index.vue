@@ -1,29 +1,33 @@
 <template>
-  <ScrollBar>
-    <el-menu mode="vertical"
-             :show-timeout="200"
-             :default-active="$route.path"
-             background-color="#304156"
-             text-color="#bfcbd9"
-             active-text-color="#409EFF">
-      <SidebarItem :routes="routes">
-
-      </SidebarItem>
+  <scroll-bar>
+    <el-menu
+        mode="vertical"
+        :show-timeout="200"
+        :default-active="$route.path"
+        background-color="#304156"
+        text-color="#bfcbd9"
+        active-text-color="#409EFF"
+    >
+      <sidebar-item :routes="routeTree"></sidebar-item>
     </el-menu>
-  </ScrollBar>
+  </scroll-bar>
 </template>
 
 <script>
 import ScrollBar from "@/components/ScrollBar";
 import SidebarItem from "@/components/Sidebar/item";
-import {firstRouterMap} from "@/router";
+import store from "@/store";
+
 export default {
   name: "Sidebar",
   components: {SidebarItem, ScrollBar},
   computed: {
-    routes() {
-      return firstRouterMap;
-    }
+    routeTree() {
+      return store.getters.routeMap;
+    },
+    /*isCollapse() {
+      return !this.sidebar.opened
+    }*/
   }
 }
 </script>

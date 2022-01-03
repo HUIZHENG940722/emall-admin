@@ -1,11 +1,17 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+const originalPush = Router.prototype.push;
+Router.prototype.push = function push(location, onResolve, onReject) {
+    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject);
+    return originalPush.call(this, location).catch(err => err);
+}
+
 // 使用路由组件
 Vue.use(Router);
 
-// 第一层路由
-export const firstRouterMap = [
+// 共享路由
+export const sharedRouterMap = [
     {
         path: '/login',
         component: ()=> import('@/pages/login'),
@@ -27,6 +33,10 @@ export const firstRouterMap = [
             }
         ]
     },
+]
+
+// 权限路由
+export const permissionRouteMap = [
     {
         path: '/pms',
         component: ()=> import('@/pages/layout'),
@@ -346,13 +356,9 @@ export const firstRouterMap = [
     }
 ];
 
-// 第二层以及相应下级路由
-/*export const secondRouterMap = [
-
-];*/
-
 export default new Router(
     {
-        routes: firstRouterMap,
+        scrollBehavior:  () => ({y: 0}),
+        routes: sharedRouterMap,
     }
 );

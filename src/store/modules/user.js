@@ -1,9 +1,12 @@
-import {getToken, removeToken, setToken} from "@/utils/cookieUtil";
+import {getToken, removeToken, setCookie, setToken} from "@/utils/cookieUtil";
 import {adminLogin, adminLogout, getAdminInfo} from "@/api/admin";
 
 const user = {
     state: {
         token: getToken(),
+        roles: [],
+        name: '',
+        avatar: ''
     },
     mutations: {
         SET_TOKEN: (state, token) => {
@@ -25,6 +28,7 @@ const user = {
                 adminLogin(userInfo.username.trim(), userInfo.password.trim()).then(response => {
                     const data = response.data;
                     const tokenStr = data.tokenHead + data.token;
+                    setCookie('username', userInfo.username.trim());
                     setToken(tokenStr);
                     commit('SET_TOKEN', tokenStr);
                     resolve();
@@ -44,14 +48,14 @@ const user = {
             return new Promise((resolve, reject) => {
                 getAdminInfo().then(response => {
                     const data = response.data;
-                    if (data.roles && data.roles.length.length > 0) {
+                    if (data.roles && data.roles.length > 0) {
                         commit('SET_ROLES', data.roles);
                     } else {
                         reject('getInfo: roles must be a non-null array !');
                     }
                     commit('SET_NAME', data.username);
                     commit('SET_AVATAR', data.icon);
-                    response.resolve(response);
+                    resolve(response);
                 }).catch(error => {
                     reject(error);
                 });
